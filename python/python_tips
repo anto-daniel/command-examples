@@ -1,0 +1,15 @@
+1. To execute sudo and normal sequence of commands in python in multiple hosts use fabric.api module or class. You need to install/male import in python
+
+$ cat fabfile.py
+#!/usr/bin/python
+
+from fabric.api import *
+
+env.user = 'antodaniel'
+env.password = 'xxxxxxxxxx'
+
+def fdisk_info():
+    """ fdisk info """
+    sudo("fdisk -l")
+
+$ fab -H host1,host2,... -w -D --timeout=10 --skip-bad-hosts fdisk_info 
