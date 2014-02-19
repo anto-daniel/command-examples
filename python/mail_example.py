@@ -4,8 +4,8 @@ import smtplib
 
 from  email.mime.text import MIMEText
 sender = 'anto.daniel@localhost'
-receivers = ['anto.daniel@inmobi.com','manzoor.ahamed@inmobi.com']
-fp = open('file1','rb')
+receivers = ['anto.daniel@inmobi.com','anto.daniel@gmail.com']
+fp = open('mail_test_file.txt','rb')
 msg = MIMEText(fp.read())
 fp.close()
 message = """From: Anto Daniel <antodaniel@antodaniel.mygiz.com>
