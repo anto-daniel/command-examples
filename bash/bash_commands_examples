@@ -56,3 +56,14 @@ UJ1SR10044  asset.server:UJ1SR10044
 LHR1SR10032 asset.server:LHR1SR10032
 anto@office:~/bobby$ 
 
+2. Appening text at the end of each line 
+
+anto@office:~/bobby$ cat example3| grep -v servername
+tzns4004.grid.uj1
+tzns4005.grid.uj1
+anto@office:~/bobby$  
+anto@office:~/bobby$ cat example3| grep -v servername | sed 's/$/.inmobi.com/g'
+tzns4004.grid.uj1.inmobi.com
+tzns4005.grid.uj1.inmobi.com 
+anto@office:~/bobby$ 
+
