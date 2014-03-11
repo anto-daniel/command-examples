@@ -1,0 +1,16 @@
+antodaniel@clf1001:~$ sudo dmidecode -t memory | egrep "Maximum\ Capacity|Devices|Size"
+	Maximum Capacity: 192 GB
+	Number Of Devices: 12
+	Size: 16384 MB
+	Size: 16384 MB
+	Size: No Module Installed
+	Size: 16384 MB
+	Size: 16384 MB
+	Size: No Module Installed
+	Size: 16384 MB
+	Size: 16384 MB
+	Size: No Module Installed
+	Size: 16384 MB
+	Size: 16384 MB
+	Size: No Module Installed
+antodaniel@clf1001:~$ 
