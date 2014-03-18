@@ -14,3 +14,26 @@ antodaniel@clf1001:~$ sudo dmidecode -t memory | egrep "Maximum\ Capacity|Device
 	Size: 16384 MB
 	Size: No Module Installed
 antodaniel@clf1001:~$ 
+
+egacli -PDGetNum -aALL
+megacli -PDList -a0 | grep -i "Firmware state"
+megacli -LDGetNum -aALL
+	
+	
+megacli -LDInfo -LALL -aALL | grep -i raid
+
+for i in 6 5 4 3 2 1; do megacli -CfgLdDel -L$i -a0; done
+
+########## for i in 6 5 4 3 2 1; do megacli -CfgLdDel -L$i -Force -a0; done
+########## megacli -DiscardPreservedCache -Lall -a1
+########## megacli -CfgForeign -Clear -a0
+
+for i in 2 3 4 5 6 7 ; do megacli -CfgLdAdd -r0[32:$i] -a0; done
+
+
+partprobe
+fdisk -l
+
+
+
+megacli -CfgSpanAdd -r10 -Array0[32:2,32:3] -Array1[32:4,32:5] -a0
