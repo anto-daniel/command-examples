@@ -67,3 +67,22 @@ tzns4004.grid.uj1.inmobi.com
 tzns4005.grid.uj1.inmobi.com 
 anto@office:~/bobby$ 
 
+# lshw -c memory | grep size: | awk '{print $2}' | grep GiB
+4GiB
+4GiB
+4GiB
+4GiB
+4GiB
+4GiB
+# 
+# lshw -c memory | grep size: | awk '{print $2}' | grep GiB | sed 's/GiB//g'
+4                         
+4
+4
+4
+4
+4
+# lshw -c memory | grep size: | awk '{print $2}' | grep GiB | sed 's/GiB//g' | awk '{sum+=$1} END {print sum}'
+24                        
+# 
+
