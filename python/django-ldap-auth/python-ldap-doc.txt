@@ -1,0 +1,224 @@
+LDAP Basics With Python
+By mcraig on Aug 13, 2009
+
+In an earlier entry I mentioned the Python LDAP API. Python is not a familiar language, but does get easier each time I relearn it.
+
+After finding the modules through http://www.python-ldap.org/ and getting everything installed on a Windows XP laptop, I installed ⁞OpenDS SE 2.0, importing Example.ldif to play with some familiar data.
+
+What follows is a Python session in IDLE, minus typos, showing quick and dirty authentication and searching. ("Quick and dirty" because you would never send a user password over the network in clear text. Maybe some more on that one later.)
+
+Python 2.5.2 (r252:60911, Feb 21 2008, 13:11:45) [MSC v.1310 32 bit (Intel)] on win32
+Type "copyright", "credits" or "license()" for more information.
+
+    \*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*
+    Personal firewall software may warn about the connection IDLE
+    makes to its subprocess using this computer's internal loopback
+    interface.  This connection is not visible on any external
+    interface and no data is sent to or received from the Internet.
+    \*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*
+    
+IDLE 1.2.2      
+>>> # Download LDAP modules through http://www.python-ldap.org/
+>>> import ldap,ldif,sys
+>>> 
+>>> ### Authenticate
+>>> # Get a connection to your LDAP server
+>>> ld = ldap.initialize('ldap://localhost:1389')
+>>>
+>>> # Authenticate based on user id/email and password
+>>> user = "bjensen"
+>>> password = "hifalutin"
+>>> 
+>>> # Bind anonymously to search for the user entry DN
+>>> ld.simple_bind_s()
+(97, [])
+>>>
+>>> basedn = "ou=people,dc=example,dc=com"
+>>> filter = "(|(uid=" + user + "\*)(mail=" + user + "\*))"
+>>> results = ld.search_s(basedn,ldap.SCOPE_SUBTREE,filter)
+>>> for dn,entry in results:
+    dn = str(dn)
+
+    
+>>> # Bind with the DN and password
+>>> ld.simple_bind_s(dn,password)
+(97, [])
+>>> # Bind was successful
+>>> ld.whoami_s()
+'dn:uid=bjensen,ou=People,dc=example,dc=com'
+>>> 
+>>> 
+>>> ### Search
+>>> 
+>>> ld = ldap.initialize('ldap://localhost:1389')
+>>> 
+>>> # Lookup entries with Common Name or Surname containing 
+>>> name = "jensen"
+>>> 
+>>> ld.simple_bind_s()
+(97, [])
+>>> basedn = "ou=people,dc=example,dc=com"
+>>> filter = "(|(cn=\*" + name + "\*)(sn=\*" + name + "\*))"
+>>> results = ld.search_s(basedn,ldap.SCOPE_SUBTREE,filter)
+>>>
+>>> ldif_writer = ldif.LDIFWriter(sys.stdout)
+>>> for dn,entry in results:
+    ldif_writer.unparse(dn,entry)
+
+    
+dn: uid=kjensen,ou=People,dc=example,dc=com
+cn: Kurt Jensen
+facsimileTelephoneNumber: +1 408 555 8721
+givenName: Kurt
+l: Santa Clara
+mail: kjensen@example.com
+objectClass: person
+objectClass: inetOrgPerson
+objectClass: organizationalPerson
+objectClass: top
+ou: Product Development
+ou: People
+roomNumber: 1944
+sn: Jensen
+telephoneNumber: +1 408 555 6127
+uid: kjensen
+
+dn: uid=bjensen,ou=People,dc=example,dc=com
+cn: Barbara Jensen
+cn: Babs Jensen
+facsimileTelephoneNumber: +1 408 555 1992
+givenName: Barbara
+l: Cupertino
+mail: bjensen@example.com
+objectClass: person
+objectClass: inetOrgPerson
+objectClass: organizationalPerson
+objectClass: top
+ou: Product Development
+ou: People
+roomNumber: 0209
+sn: Jensen
+telephoneNumber: +1 408 555 1862
+uid: bjensen
+
+dn: uid=gjensen,ou=People,dc=example,dc=com
+cn: Gern Jensen
+facsimileTelephoneNumber: +1 408 555 9751
+givenName: Gern
+l: Santa Clara
+mail: gjensen@example.com
+objectClass: person
+objectClass: inetOrgPerson
+objectClass: organizationalPerson
+objectClass: top
+ou: Human Resources
+ou: People
+roomNumber: 4609
+sn: Jensen
+telephoneNumber: +1 408 555 3299
+uid: gjensen
+
+dn: uid=jjensen,ou=People,dc=example,dc=com
+cn: Jody Jensen
+facsimileTelephoneNumber: +1 408 555 8721
+givenName: Jody
+l: Sunnyvale
+mail: jjensen@example.com
+objectClass: person
+objectClass: inetOrgPerson
+objectClass: organizationalPerson
+objectClass: top
+ou: Accounting
+ou: People
+roomNumber: 4882
+sn: Jensen
+telephoneNumber: +1 408 555 7587
+uid: jjensen
+
+dn: uid=ajensen,ou=People,dc=example,dc=com
+cn: Allison Jensen
+facsimileTelephoneNumber: +1 408 555 0111
+givenName: Allison
+l: Santa Clara
+mail: ajensen@example.com
+objectClass: person
+objectClass: inetOrgPerson
+objectClass: organizationalPerson
+objectClass: top
+ou: Product Development
+ou: People
+roomNumber: 0784
+sn: Jensen
+telephoneNumber: +1 408 555 7892
+uid: ajensen
+
+dn: uid=bjense2,ou=People,dc=example,dc=com
+cn: Bjorn Jensen
+facsimileTelephoneNumber: +1 408 555 4774
+givenName: Bjorn
+l: Santa Clara
+mail: bjense2@example.com
+objectClass: person
+objectClass: inetOrgPerson
+objectClass: organizationalPerson
+objectClass: top
+ou: Accounting
+ou: People
+roomNumber: 4294
+sn: Jensen
+telephoneNumber: +1 408 555 5655
+uid: bjense2
+
+dn: uid=tjensen,ou=People,dc=example,dc=com
+cn: Ted Jensen
+facsimileTelephoneNumber: +1 408 555 3825
+givenName: Ted
+l: Santa Clara
+mail: tjensen@example.com
+objectClass: person
+objectClass: inetOrgPerson
+objectClass: organizationalPerson
+objectClass: top
+ou: Accounting
+ou: People
+roomNumber: 4717
+sn: Jensen
+telephoneNumber: +1 408 555 8622
+uid: tjensen
+
+dn: uid=rjensen,ou=People,dc=example,dc=com
+cn: Richard Jensen
+facsimileTelephoneNumber: +1 408 555 3825
+givenName: Richard
+l: Cupertino
+mail: rjensen@example.com
+objectClass: person
+objectClass: inetOrgPerson
+objectClass: organizationalPerson
+objectClass: top
+ou: Accounting
+ou: People
+roomNumber: 2631
+sn: Jensen
+telephoneNumber: +1 408 555 5957
+uid: rjensen
+
+dn: uid=rjense2,ou=People,dc=example,dc=com
+cn: Randy Jensen
+facsimileTelephoneNumber: +1 408 555 1992
+givenName: Randy
+l: Sunnyvale
+mail: rjense2@example.com
+objectClass: person
+objectClass: inetOrgPerson
+objectClass: organizationalPerson
+objectClass: top
+ou: Product Testing
+ou: People
+roomNumber: 1984
+sn: Jensen
+telephoneNumber: +1 408 555 9045
+uid: rjense2
+
+>>> ld.unbind_s()
+>>>
