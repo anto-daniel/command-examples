@@ -1,0 +1,13 @@
+<html>
+    <head>
+        <title>Login</title>
+    </head>
+    <body>
+        {{state}}
+        <form action="" method="post"> {% csrf_token %}
+            Email address: <input type="text" name="email" value="{{ email }}" />
+            Password: <input type="password" name="password" value="" />
+            <input type="submit" value="Log in" />
+        </form>
+    </body>
+</html>

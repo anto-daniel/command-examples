@@ -1,0 +1,35 @@
+Download and Install DJANGO
+===========================
+
+pip install Django 
+sudo apt-get install python-ldap
+
+Creating a Project
+------------------
+$ cd dir_proj
+$ django-admin.py startproject mysite
+
+startproject created
+
+mysite/
+    manage.py
+    mysite/
+        __init__.py
+        settings.py
+        urls.py
+        wsgi.py 
+
+$ python manage.py runserver
+
+Performing system checks...
+
+0 errors found
+April 10, 2014 - 15:50:53
+Django version 1.8, using settings 'mysite.settings'
+Starting development server at http://127.0.0.1:8000/
+Quit the server with CONTROL-C.
+
+
+or 
+
+$ python manage.py runserver 0.0.0.0:8000
