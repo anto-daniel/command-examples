@@ -176,3 +176,24 @@ anto@office:~$ paste -s -d+ count
 anto@office:~$ paste -s -d+ count | bc
 5050
 anto@office:~$ 
+
+
+
+===========
+
+antodaniel@mon01:~$ curl -s checkip.dyndns.org
+<html><head><title>Current IP Check</title></head><body>Current IP Address: 174.140.140.8</body></html>
+antodaniel@mon01:~$ cat > sample
+<html><head><title>Current IP Check</title></head><body>Current IP Address: 174.140.140.8</body></html>
+antodaniel@mon01:~$ 
+antodaniel@mon01:~$ 
+antodaniel@mon01:~$ cat sample
+<html><head><title>Current IP Check</title></head><body>Current IP Address: 174.140.140.8</body></html>
+antodaniel@mon01:~$ 
+antodaniel@mon01:~$ cat sample | sed -e 's/.*Current IP Address: //' -e 's/<.*$//'
+174.140.140.8
+antodaniel@mon01:~$ cat sample | sed -e 's/.*Current IP Address: //'
+174.140.140.8</body></html>
+antodaniel@mon01:~$ cat sample | sed -e 's/.*Current IP Address: //' -e 's/<.*$//'
+174.140.140.8
+antodaniel@mon01:~$
