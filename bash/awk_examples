@@ -1,0 +1,75 @@
+$cat student-marks
+Jones 2143 78 84 77
+Gondrol 2321 56 58 45
+RinRao 2122 38 37
+Edwin 2537 87 97 95
+Dayan 2415 30 47
+
+
+1. Awk If Example: Check all the marks are exist
+
+$ awk '{
+if ($3 =="" || $4 == "" || $5 == "")
+    print "Some score for the student",$1,"is missing";'
+}' student-marks
+Some score for the student RinRao is missing
+Some score for the student Dayan is missing
+
+
+
+2. Awk If Else Example: Generate Pass/Fail Report based on Student marks in each subject
+
+
+$ awk '{
+if ($3 >=35 && $4 >= 35 && $5 >= 35)
+    print $0,"=>","Pass";
+else
+    print $0,"=>","Fail";
+}' student-marks
+Jones 2143 78 84 77 => Pass
+Gondrol 2321 56 58 45 => Pass
+RinRao 2122 38 37 => Fail
+Edwin 2537 87 97 95 => Pass
+Dayan 2415 30 47 => Fail 
+
+
+
+
+3. Awk If Else If Example: Find the average and grade for every student
+
+
+$ cat grade.awk
+{
+total=$3+$4+$5;
+avg=total/3;
+if ( avg >= 90 ) grade="A";
+else if ( avg >= 80) grade ="B";
+else if (avg >= 70) grade ="C";
+else grade="D";
+
+print $0,"=>",grade;
+}
+$ awk -f grade.awk student-marks
+Jones 2143 78 84 77 => C
+Gondrol 2321 56 58 45 => D
+RinRao 2122 38 37 => D
+Edwin 2537 87 97 95 => A
+Dayan 2415 30 47 => D
+
+
+
+
+
+
+4. Awk Ternary ( ?: ) Example: Concatenate every 3 lines of input with a comma.
+
+$ awk 'ORS=NR%3?",":"\n"' student-marks
+Jones 2143 78 84 77,Gondrol 2321 56 58 45,RinRao 2122 38 37
+Edwin 2537 87 97 95,Dayan 2415 30 47,
+
+
+
+
+
+
+
