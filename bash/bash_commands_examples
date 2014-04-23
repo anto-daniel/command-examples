@@ -179,6 +179,7 @@ anto@office:~$
 
 
 
+<<<<<<< HEAD
 
 
 anto@office:~/operations/puppet/modules/fai/files$ cat config.yaml | egrep -w -o  '[0-9]{2}\.[0-9]*\.[0-9]*\.[1-9]*'  | head -5
@@ -199,3 +200,23 @@ anto@office:~/operations/puppet/modules/fai/files$ cat config.yaml | egrep  -w -
 10.2.0.58
 anto@office:~/operations/puppet/modules/fai/files$ 
 
+=======
+===========
+
+antodaniel@mon01:~$ curl -s checkip.dyndns.org
+<html><head><title>Current IP Check</title></head><body>Current IP Address: 174.140.140.8</body></html>
+antodaniel@mon01:~$ cat > sample
+<html><head><title>Current IP Check</title></head><body>Current IP Address: 174.140.140.8</body></html>
+antodaniel@mon01:~$ 
+antodaniel@mon01:~$ 
+antodaniel@mon01:~$ cat sample
+<html><head><title>Current IP Check</title></head><body>Current IP Address: 174.140.140.8</body></html>
+antodaniel@mon01:~$ 
+antodaniel@mon01:~$ cat sample | sed -e 's/.*Current IP Address: //' -e 's/<.*$//'
+174.140.140.8
+antodaniel@mon01:~$ cat sample | sed -e 's/.*Current IP Address: //'
+174.140.140.8</body></html>
+antodaniel@mon01:~$ cat sample | sed -e 's/.*Current IP Address: //' -e 's/<.*$//'
+174.140.140.8
+antodaniel@mon01:~$
+>>>>>>> 201150acaa194d8995ecf646e8c2693bded10450
