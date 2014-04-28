@@ -72,4 +72,50 @@ Edwin 2537 87 97 95,Dayan 2415 30 47,
 
 
 
+anto@office:~$ cat f
+rbgs4116.grid.ua2.inmobi.com 10.3.1.95
+rbgs4117.grid.ua2.inmobi.com 10.3.1.96
+rbgs4118.grid.ua2.inmobi.com 10.3.1.97
+rbgs4119.grid.ua2.inmobi.com 10.3.15.68
+rbgs4120.grid.ua2.inmobi.com 10.3.15.69
+rbgs4121.grid.ua2.inmobi.com 10.3.15.70
+rbgs4122.grid.ua2.inmobi.com 10.3.15.71
+rbgs4123.grid.ua2.inmobi.com 10.3.15.72
+rbgs4124.grid.ua2.inmobi.com 10.3.15.73
+rbgs4125.grid.ua2.inmobi.com 10.3.15.74
+rbgs4126.grid.ua2.inmobi.com 10.3.15.75
+rbgs4127.grid.ua2.inmobi.com 10.3.15.76
+rbgs4128.grid.ua2.inmobi.com 10.3.15.77
+rbgs4129.grid.ua2.inmobi.com 10.3.15.78
+anto@office:~$ cat grid
+rbgs4116.grid.ua2.inmobi.com 10.3.1.95
+rbgs4117.grid.ua2.inmobi.com 10.3.1.96
+rbgs4118.grid.ua2.inmobi.com 10.3.1.97
+rbgs4119.grid.ua2.inmobi.com 10.3.15.68
+rbgs4120.grid.ua2.inmobi.com 10.3.15.69
+rbgs4121.grid.ua2.inmobi.com 10.3.15.70
+rbgs4122.grid.ua2.inmobi.com 10.3.15.71
+rbgs4123.grid.ua2.inmobi.com 10.3.15.72
+rbgs4124.grid.ua2.inmobi.com 10.3.15.73
+rbgs4125.grid.ua2.inmobi.com 10.3.15.74
+rbgs4126.grid.ua2.inmobi.com 10.3.15.75
+rbgs4127.grid.ua2.inmobi.com 10.3.15.76
+rbgs4128.grid.ua2.inmobi.com 10.3.15.77
+rbgs4129.grid.ua2.inmobi.com 10.3.15.78
+anto@office:~$ awk 'BEGIN{getline to_add < "grid"}{print $0,to_add}' f
+rbgs4116.grid.ua2.inmobi.com 10.3.1.95 rbgs4116.grid.ua2.inmobi.com 10.3.1.95
+rbgs4117.grid.ua2.inmobi.com 10.3.1.96 rbgs4116.grid.ua2.inmobi.com 10.3.1.95
+rbgs4118.grid.ua2.inmobi.com 10.3.1.97 rbgs4116.grid.ua2.inmobi.com 10.3.1.95
+rbgs4119.grid.ua2.inmobi.com 10.3.15.68 rbgs4116.grid.ua2.inmobi.com 10.3.1.95
+rbgs4120.grid.ua2.inmobi.com 10.3.15.69 rbgs4116.grid.ua2.inmobi.com 10.3.1.95
+rbgs4121.grid.ua2.inmobi.com 10.3.15.70 rbgs4116.grid.ua2.inmobi.com 10.3.1.95
+rbgs4122.grid.ua2.inmobi.com 10.3.15.71 rbgs4116.grid.ua2.inmobi.com 10.3.1.95
+rbgs4123.grid.ua2.inmobi.com 10.3.15.72 rbgs4116.grid.ua2.inmobi.com 10.3.1.95
+rbgs4124.grid.ua2.inmobi.com 10.3.15.73 rbgs4116.grid.ua2.inmobi.com 10.3.1.95
+rbgs4125.grid.ua2.inmobi.com 10.3.15.74 rbgs4116.grid.ua2.inmobi.com 10.3.1.95
+rbgs4126.grid.ua2.inmobi.com 10.3.15.75 rbgs4116.grid.ua2.inmobi.com 10.3.1.95
+rbgs4127.grid.ua2.inmobi.com 10.3.15.76 rbgs4116.grid.ua2.inmobi.com 10.3.1.95
+rbgs4128.grid.ua2.inmobi.com 10.3.15.77 rbgs4116.grid.ua2.inmobi.com 10.3.1.95
+rbgs4129.grid.ua2.inmobi.com 10.3.15.78 rbgs4116.grid.ua2.inmobi.com 10.3.1.95
+anto@office:~$ 
 
