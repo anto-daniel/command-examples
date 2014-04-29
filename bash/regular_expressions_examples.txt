@@ -20,3 +20,8 @@ anto@office:~/mutt_stuff$ cat s |egrep "[0-9]?[0-9]:[0-9][0-9].(am|pm)"
 18:53 am
 9:23 pm
 anto@office:~/mutt_stuff$ 
+anto@office:~$ cat mac_addr  | egrep '[^0-9A-Fa-f:]'
+23:3e:4r:5e:dd:a0
+anto@office:~$ cat mac_addr  | egrep -v '[^0-9A-Fa-f:]'
+00:21:28:75:ae:4c
+anto@office:~$ 
