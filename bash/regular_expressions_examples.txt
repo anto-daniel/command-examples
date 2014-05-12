@@ -55,3 +55,34 @@ Octal value for a character
 \S - Non-space character
 \t - Horizontal tab character
 \v - Vertical tab character
+
+
+anto@office:~$ cat h1.sed 
+#!/usr/bin/sed
+
+s/^/<h1>/
+s/$/<\/h1>/
+q
+anto@office:~$ sed -f h1.sed rime.txt 
+<h1>THE RIME OF THE ANCYENT MARINERE, IN SEVEN PARTS.</h1>
+anto@office:~$ perl -ne 'if ($. == 1) { s/^/<h1>/; s/$/<\/h1>/m; print; }' rime.txt
+<h1>THE RIME OF THE ANCYENT MARINERE, IN SEVEN PARTS.</h1>
+anto@office:~$ 
+Here is what happened in the Perl command, broken down again into pieces:
+• perl invokes the Perl program.
+• The -n option loops through the input (the file rime.txt).
+• The -e option allows you to submit program code on the command line, rather
+than from a file (like sed).
+• The if statement checks to see if you are on line 1. $. is a special variable in Perl
+that matches the current line.
+• The first substitute command s finds the beginning of the first line (^) and inserts
+an h1 start-tag there.
+• The second substitute command searches for the end of the line ($), and then inserts
+an h1 end-tag.
+• The m or multiline modifier or flag at the end of the substitute command indicates
+that you are treating this line distinctly and separately; consequently, the $ matches
+the end of line 1, not the end of the file.
+• At last, it prints the result to standard output (the screen).
+• All these operations are performed again the file rime.txt.
+
+
