@@ -25,6 +25,10 @@ anto@office:~$ cat mac_addr  | egrep '[^0-9A-Fa-f:]'
 anto@office:~$ cat mac_addr  | egrep -v '[^0-9A-Fa-f:]'
 00:21:28:75:ae:4c
 anto@office:~$ 
+anto@office:~$ cat sample | egrep "((([0-9a-f]){2}:){5})[0-9a-f]{2}"
+00:21:28:75:ae:4c
+anto@office:~$ 
+
 
 Regular Expressions shortcuts:
 =============================
