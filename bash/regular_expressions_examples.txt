@@ -25,3 +25,10 @@ anto@office:~$ cat mac_addr  | egrep '[^0-9A-Fa-f:]'
 anto@office:~$ cat mac_addr  | egrep -v '[^0-9A-Fa-f:]'
 00:21:28:75:ae:4c
 anto@office:~$ 
+
+Regular Expressions shortcuts:
+=============================
+\w - matches letters and numbers = [a-zA-Z0-9]
+\W - matches all characters other than letters and numbers = [^a-zA-Z0-9] 
+\d - matches digits = [0-9]
+\D - matches non-digits characters = [^0-9]
