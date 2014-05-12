@@ -32,3 +32,22 @@ Regular Expressions shortcuts:
 \W - matches all characters other than letters and numbers = [^a-zA-Z0-9] 
 \d - matches digits = [0-9]
 \D - matches non-digits characters = [^0-9]
+\a - Alert
+\b - Word boundary
+[\b] Backspace character
+\B - Non-word boundary
+\c x - Control character
+\d xxx - Decimal value for a character
+\f - Form feed character
+\r - Carriage return
+\n - Newline character
+pass:[<literal>\o</literal>
+
+Octal value for a character
+
+<replaceable>\ xxx</replaceable>]
+
+\s - Space character
+\S - Non-space character
+\t - Horizontal tab character
+\v - Vertical tab character
