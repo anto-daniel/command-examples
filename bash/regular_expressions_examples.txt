@@ -1,4 +1,4 @@
-Regular Expressions:
+Expressions:
 =======================
 
 anto@office:~$ cat ss
@@ -63,10 +63,15 @@ anto@office:~$ cat h1.sed
 s/^/<h1>/
 s/$/<\/h1>/
 q
+
+
 anto@office:~$ sed -f h1.sed rime.txt 
 <h1>THE RIME OF THE ANCYENT MARINERE, IN SEVEN PARTS.</h1>
+
+
 anto@office:~$ perl -ne 'if ($. == 1) { s/^/<h1>/; s/$/<\/h1>/m; print; }' rime.txt
 <h1>THE RIME OF THE ANCYENT MARINERE, IN SEVEN PARTS.</h1>
+
 anto@office:~$ 
 Here is what happened in the Perl command, broken down again into pieces:
 • perl invokes the Perl program.
