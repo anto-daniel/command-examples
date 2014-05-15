@@ -91,3 +91,9 @@ the end of line 1, not the end of the file.
 • All these operations are performed again the file rime.txt.
 
 
+$ cat /etc/dhcp/dhcpd.conf | egrep -o "(([a-z0-9]*[.-]?){2})*.uj1.inmobi.com" | head -4
+redis-s2s-1002.sdt.uj1.inmobi.com
+redis-s2s-1002.sdt.uj1.inmobi.com
+global-www-1001.ci.uj1.inmobi.com
+global-www-1001.ci.uj1.inmobi.com
+$ 
