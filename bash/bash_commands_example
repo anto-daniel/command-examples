@@ -218,3 +218,9 @@ antodaniel@mon01:~$ cat sample | sed -e 's/.*Current IP Address: //' -e 's/<.*$/
 174.140.140.8
 antodaniel@mon01:~$
 
+replace newline with space
+===========================
+
+sed ':a;N;$!ba;s/\n/ /g'
+
+
