@@ -2,7 +2,7 @@ import sys, getopt
 from jira.client import JIRA
 
 options = {'server':'https://jira.corp.inmobi.com', 'verify':False}
-jira = JIRA(options, basic_auth=('anto.daniel','Rachel@123'))
+jira = JIRA(options, basic_auth=('anto.daniel','xxxxxx'))
 
 proj = raw_input("Enter ProjectType: ")
 print proj
