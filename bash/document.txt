@@ -1,0 +1,31 @@
+display last line of the file
+=================
+anto@office:~$ sed -n '$ p' clr_space.sh 
+fi
+anto@office:~$
+
+how to remove 1st line from file
+==================
+anto@office:~$ sed -i '1d' clr_space.sh 
+
+root@antodaniel-ThinkPad-E420:/var/log/tomcat6# ls -1 *.gz | xargs -I {} gunzip {} | screen -dm
+
+Difference between hardlink and soft link
+
+#. If original file removed in soft link, the link is broken. where as in harlink, the created link is not broken
+#. Soft link are pointers to programs
+#. inode will be different for soft link, but inode will be same for hardlink
+#. cannot create hardlink in different partition
+
+What is Zombie process in UNIX? How do you find Zombie process in UNIX?
+
+When a program forks and the child finishes before the parent, the kernel still keeps some of its information
+about the child in case the parent might need it - for example, the parent may need to check the child's exit
+status. To be able to get this information, the parent calls 'wait()'; In the interval between the child
+terminating and the parent calling 'wait()', the child is said to be a 'zombie' (If you do 'ps', the child 
+will have a 'Z' in its status field to indicate this.)
+
+
+
+
+
