@@ -223,4 +223,6 @@ replace newline with space
 
 sed ':a;N;$!ba;s/\n/ /g'
 
+==========================
+cat .ssh/id_rsa.pub | ssh sample1 "mkdir -p .ssh && cat - >> ~/.ssh/authorized_keys"
 
