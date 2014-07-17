@@ -1,3 +1,19 @@
+
+Examples:
+    gawk '{ sum += $1 }; END { print sum }' file
+    gawk -F: '{ print $1 }' /etc/passwd
+anto@office:~$ 
+anto@office:~$ 
+anto@office:~$ awk -F: '/anto/ {print $1}' /etc/passwd
+antodaniel
+anto@office:~$ gawk -F: '/anto/ {print $1}' /etc/passwd
+antodaniel
+anto@office:~$ gawk -F: '/anto/ {print $_}' /etc/passwd
+antodaniel:x:1000:1000:antodaniel,,,:/home/antodaniel:/bin/bash
+anto@office:~$ '}}}}}}'
+
+
+
 $cat student-marks
 Jones 2143 78 84 77
 Gondrol 2321 56 58 45
