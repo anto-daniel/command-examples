@@ -10,8 +10,9 @@ anto@office:~$ gawk -F: '/anto/ {print $1}' /etc/passwd
 antodaniel
 anto@office:~$ gawk -F: '/anto/ {print $_}' /etc/passwd
 antodaniel:x:1000:1000:antodaniel,,,:/home/antodaniel:/bin/bash
-anto@office:~$ '}}}}}}'
-
+anto@office:~$ awk -F: '$1 ~ /anto/ {print $_}' /etc/passwd
+antodaniel:x:1000:1000:antodaniel,,,:/home/antodaniel:/bin/bash
+anto@office:~$ '}'
 
 
 $cat student-marks
