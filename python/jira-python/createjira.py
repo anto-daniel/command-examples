@@ -1,26 +1,51 @@
-import sys, getopt
+#!/usr/bin/env python
+""" This Script helps in creating InMobi JIRA ticket """
+
+import sys
+import getopt
 from jira.client import JIRA
 
-options = {'server':'https://jira.corp.inmobi.com', 'verify':False}
-jira = JIRA(options, basic_auth=('anto.daniel','xxxxxx'))
 
-proj = raw_input("Enter ProjectType: ")
-print proj
-summary = raw_input("Enter Summary: ")
-print summary
-desc = raw_input("Enter Description: ")
-print desc
+class CreateJIRA:
+    """ Main Class """
 
-#summary = sys.argv[1]
+    def __init__(self):
+        """ Initial Variables """
 
-issue = jira.create_issue(project={'key': ""+proj+""}, summary=""+summary+"",description=""+desc+"",issuetype={'name': 'Bug'},assignee={'name': 'anto.daniel','emailAddress': 'anto.daniel@inmobi.com'})
-print issue
-#user_created = issue.fields.creator
-#description = issue.fields.description.title()
-#print "Ticket Created by: "+user_created.__str__()+"\n"
-#print "Ticket Description: "+description+"\n"
-#print "Comments: "
-#for comment in issue.fields.comment.comments:
-#    print comment.id
-#    print comment.body
- 
+        self.emailid = "anto.daniel@inmobi.com"
+        options = {'server': 'https://jira.corp.inmobi.com', 'verify': False}
+        self.jira = JIRA(options, basic_auth=('anto.daniel', 'Rachel@123'))
+
+    def enter_details(self):
+        """ Enter Details to create JIRA """
+
+        self.proj = raw_input("Enter ProjectType: ")
+        print self.proj
+        self.summary = raw_input("Enter Summary: ")
+        print self.summary
+        self.desc = raw_input("Enter Description: ")
+        print self.desc
+        
+
+    def create_jira(self):
+        """ With previous method details, creats jira ticket """
+
+        issue = self.jira.create_issue(project={'key': ""+self.proj+""},
+                                       summary=""+self.summary+"",
+                                       description=""+self.desc+"",
+                                       assignee={'name': 'anto.daniel',
+                                                 'emailAddress': 'anto.daniel@inmobi.com'},
+                                       issuetype={'name': 'On-call Bug'},
+#                                       components=["Grid-Infra"]
+                                       )
+        print issue
+
+
+def main():
+
+    instance = CreateJIRA()
+    instance.enter_details()
+    instance.create_jira()
+
+if __name__ == "__main__":
+    main()
