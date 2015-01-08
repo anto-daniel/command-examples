@@ -22,7 +22,7 @@ class CreateJIRA:
 
         self.emailid = "anto.daniel@inmobi.com"
         options = {'server': 'https://jira.corp.inmobi.com', 'verify': False}
-        self.jira = JIRA(options, basic_auth=('anto.daniel', 'Rachel@123'))
+        self.jira = JIRA(options, basic_auth=('anto.daniel', 'Paul@123'))
 
     def create_jira(self, args):
         """ With previous method details, creats jira ticket """
@@ -35,7 +35,7 @@ class CreateJIRA:
                                                  'anto.daniel@inmobi.com'},
                                        issuetype={'name': 'On-call Bug'},
                                        )
-        log.info('JIRA Ticket ID: %s' % issue)
+        log.info('JIRA Ticket ID: %s created' % issue)
 
 
 def main():

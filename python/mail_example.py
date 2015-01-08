@@ -1,4 +1,4 @@
-#!/usr/bin/pythonTt
+#!/usr/bin/python
 
 import smtplib
 
@@ -9,7 +9,7 @@ fp = open('mail_test_file.txt','rb')
 msg = MIMEText(fp.read())
 fp.close()
 message = """From: Anto Daniel <antodaniel@antodaniel.mygiz.com>
-To: To Person <antexo.daniel@inmobi.com>
+To: To Person <anto.daniel@inmobi.com>
 Subject: SMTP e-mail test 2
 
 This is a test e-mail message.
