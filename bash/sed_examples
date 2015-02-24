@@ -10,6 +10,19 @@ strandsadserver.ads.lhr1.inmobi.com 192.168.172.55
 strandsevent.ads.lhr1.inmobi.com 192.168.172.56
 strandsmware.ads.lhr1.inmobi.com 192.168.172.57
 
+### To Remove HTML/XML tags ###
+
+$ cat rss.html
+<html>
+   <head>
+      <title> Hello HTML </title>
+   </head>
+   <body>
+       <h1> Hello P1 Page</h1>
+    </body>
+</html>
+
+cat rss | sed -e "s/<[^>]*//g"
 
 
 #####   :a create a label 'a'
