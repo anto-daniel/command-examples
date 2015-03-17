@@ -31,3 +31,5 @@ cat rss | sed -e "s/<[^>]*//g"
 
 
 
+echo 'foo bar' | sed -e 's/ /\'$'\n/g'
+will work in mac as its POSIX, it doesn't take \n as directly as newline.
