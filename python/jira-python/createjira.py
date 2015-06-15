@@ -39,7 +39,7 @@ class CreateJIRA:
                                        #issuetype={'name': 'Bug'},
                                        )
         log.info('JIRA Ticket ID: %s created' % issue)
-        os.system("xdg-open https://jira.corp.inmobi.com/browse/"+issue.__str__())
+#        os.system("xdg-open https://jira.corp.inmobi.com/browse/"+issue.__str__())
 
 
 def main():
