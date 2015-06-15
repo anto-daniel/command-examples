@@ -11,7 +11,7 @@ args = parser.parse_args()
 
 options = {'server':'https://jira.corp.inmobi.com','verify':False}
 
-jira = JIRA(options, basic_auth=('anto.daniel','Paul@123'))
+jira = JIRA(options, basic_auth=('anto.daniel','gvvmobpmrtfuadfc'))
 
 ticketid = args.ticketid
 addcomment = args.comment

@@ -4,6 +4,7 @@
 from jira.client import JIRA
 import argparse
 import logging
+import os
 
 LOGGER_NAME = 'inmobi:jira'
 # Set up logging
@@ -22,20 +23,23 @@ class CreateJIRA:
 
         self.emailid = "anto.daniel@inmobi.com"
         options = {'server': 'https://jira.corp.inmobi.com', 'verify': False}
-        self.jira = JIRA(options, basic_auth=('anto.daniel', 'xxxxxxxx'))
+        self.jira = JIRA(options, basic_auth=('anto.daniel', 'gvvmobpmrtfuadfc'))
 
     def create_jira(self, args):
         """ With previous method details, creats jira ticket """
 
         issue = self.jira.create_issue(project={'key': ""+args.project+""},
                                        summary=""+args.summary+"",
+#                                       origin=""+args.origin+"",
                                        description=""+args.description+"",
                                        assignee={'name': 'anto.daniel',
                                                  'emailAddress':
                                                  'anto.daniel@inmobi.com'},
-                                       issuetype={'name': 'On-call Bug'},
+                                       issuetype={'name': 'Nagios Alerts'},
+                                       #issuetype={'name': 'Bug'},
                                        )
         log.info('JIRA Ticket ID: %s created' % issue)
+        os.system("xdg-open https://jira.corp.inmobi.com/browse/"+issue.__str__())
 
 
 def main():
@@ -53,6 +57,8 @@ def main():
                         required=True)
     parser.add_argument("--description", help="Description of the issue",
                         required=True)
+ #   parser.add_argument("--origin", help="origin of the ticket. ex:-Ops/Production",
+ #                       required=True)
     args = parser.parse_args()
     instance = CreateJIRA()
     instance.create_jira(args)
