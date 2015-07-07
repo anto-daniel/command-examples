@@ -3,8 +3,8 @@ from jira.client import JIRA
 import argparse
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--ticketid", help="Enter TicketID. example: OPS-5432")
-parser.add_argument("--comment",help="Please comment")
+parser.add_argument("-t", "--ticketid", help="Enter TicketID. example: OPS-5432")
+parser.add_argument("-c", "--comment",help="Please comment")
 args = parser.parse_args()
 
 

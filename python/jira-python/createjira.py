@@ -5,7 +5,9 @@ from jira.client import JIRA
 import argparse
 import logging
 import os
+import urllib3
 
+urllib3.disable_warnings()
 LOGGER_NAME = 'inmobi:jira'
 # Set up logging
 log = logging.Logger(LOGGER_NAME, logging.INFO)
@@ -35,8 +37,11 @@ class CreateJIRA:
                                        assignee={'name': 'anto.daniel',
                                                  'emailAddress':
                                                  'anto.daniel@inmobi.com'},
-                                       issuetype={'name': 'Nagios Alerts'},
+                                       issuetype={'name': ""+args.type+""},
                                        #issuetype={'name': 'Bug'},
+                                       components=[{'name': ""+args.component+""},],
+                                       #components=[{'name': 'Adserve Ops'},],
+                                       #components=[{'name': 'App Ops'},],
                                        )
         log.info('JIRA Ticket ID: %s created' % issue)
 #        os.system("xdg-open https://jira.corp.inmobi.com/browse/"+issue.__str__())
@@ -51,12 +56,17 @@ def main():
         default=False,
         help='print debugging information')
 
-    parser.add_argument("--project", help="Please specify ProjectType",
+    parser.add_argument("-p", "--project", help="Please specify ProjectType",
                         required=True)
-    parser.add_argument("--summary", help="Please specify summary",
+    parser.add_argument("-s", "--summary", help="Please specify summary",
                         required=True)
-    parser.add_argument("--description", help="Description of the issue",
+    parser.add_argument("-d", "--description", help="Description of the issue",
                         required=True)
+    parser.add_argument("-c", "--component", default='GRID Ops', help="Components of the issue",
+                        required=False)
+    parser.add_argument("-t", "--type", default='Nagios Alerts', help="Issue Type",
+                        required=False)
+ 
  #   parser.add_argument("--origin", help="origin of the ticket. ex:-Ops/Production",
  #                       required=True)
     args = parser.parse_args()

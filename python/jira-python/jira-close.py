@@ -2,15 +2,16 @@ import sys, getopt
 from jira.client import JIRA
 
 options = {'server':'https://jira.corp.inmobi.com','verify':False}
-jira = JIRA(options, basic_auth=('anto.daniel','Rachel@123'))
+jira = JIRA(options, basic_auth=('anto.daniel','gvvmobpmrtfuadfc'))
 
 ticketid = sys.argv[1]
 #addcomment = sys.argv[2]
 issue = jira.issue(ticketid)
 transitions = jira.transitions(issue)
-#[(t['id'], t['name']) for t in transitions]
+[(t['id'], t['name']) for t in transitions]
 for t in transitions:
     print t['id'], t['name']
-print transitions
+#print transitions
 #jira.transition_issue(issue,'2', assignee={'name':'anto.daniel'}, resolution={'id': '1' }, rca={'id':'2'})
-jira.transition_issue(issue,'701', assignee={'name':'anto.daniel'})
+jira.transition_issue(issue,'2', assignee={'name':'anto.daniel'})
+print issue.__str__()+" Closed."
