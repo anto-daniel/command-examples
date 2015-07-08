@@ -23,8 +23,8 @@ class CreateJIRA:
     def __init__(self):
         """ Initial Variables """
 
-        self.emailid = "anto.daniel@inmobi.com"
-        options = {'server': 'https://jira.corp.inmobi.com', 'verify': False}
+        self.emailid = "anto.daniel@domain.com"
+        options = {'server': 'https://jira.corp.domain.com', 'verify': False}
         self.jira = JIRA(options, basic_auth=('anto.daniel', 'gvvmobpmrtfuadfc'))
 
     def create_jira(self, args):
@@ -38,13 +38,10 @@ class CreateJIRA:
                                                  'emailAddress':
                                                  'anto.daniel@inmobi.com'},
                                        issuetype={'name': ""+args.type+""},
-                                       #issuetype={'name': 'Bug'},
                                        components=[{'name': ""+args.component+""},],
-                                       #components=[{'name': 'Adserve Ops'},],
-                                       #components=[{'name': 'App Ops'},],
                                        )
         log.info('JIRA Ticket ID: %s created' % issue)
-#        os.system("xdg-open https://jira.corp.inmobi.com/browse/"+issue.__str__())
+#        os.system("xdg-open https://jira.corp.domain.com/browse/"+issue.__str__())
 
 
 def main():
