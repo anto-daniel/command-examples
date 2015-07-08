@@ -9,7 +9,7 @@ args = parser.parse_args()
 
 
 
-options = {'server':'https://jira.corp.inmobi.com','verify':False}
+options = {'server':'https://jira.corp.domain.com','verify':False}
 
 jira = JIRA(options, basic_auth=('anto.daniel','gvvmobpmrtfuadfc'))
 
