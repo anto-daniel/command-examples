@@ -36,7 +36,7 @@ class CreateJIRA:
                                        description=""+args.description+"",
                                        assignee={'name': 'anto.daniel',
                                                  'emailAddress':
-                                                 'anto.daniel@inmobi.com'},
+                                                 'anto.daniel@domain.com'},
                                        issuetype={'name': ""+args.type+""},
                                        components=[{'name': ""+args.component+""},],
                                        )
