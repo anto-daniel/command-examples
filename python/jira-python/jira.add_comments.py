@@ -11,7 +11,7 @@ args = parser.parse_args()
 
 options = {'server':'https://jira.corp.domain.com','verify':False}
 
-jira = JIRA(options, basic_auth=('anto.daniel','gvvmobpmrtfuadfc'))
+jira = JIRA(options, basic_auth=('anto.daniel','xxxxxxxxxxx'))
 
 ticketid = args.ticketid
 addcomment = args.comment
