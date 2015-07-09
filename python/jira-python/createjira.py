@@ -25,7 +25,7 @@ class CreateJIRA:
 
         self.emailid = "anto.daniel@domain.com"
         options = {'server': 'https://jira.corp.domain.com', 'verify': False}
-        self.jira = JIRA(options, basic_auth=('anto.daniel', 'gvvmobpmrtfuadfc'))
+        self.jira = JIRA(options, basic_auth=('anto.daniel', 'xxxxxxxxxx'))
 
     def create_jira(self, args):
         """ With previous method details, creats jira ticket """
