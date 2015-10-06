@@ -33,3 +33,5 @@ cat rss | sed -e "s/<[^>]*//g"
 
 echo 'foo bar' | sed -e 's/ /\'$'\n/g'
 will work in mac as its POSIX, it doesn't take \n as directly as newline.
+:.,$s/Fortran/\U&/g    - On current line to last line , change word to uppercase
+:%s/.*/\L&/            - Lowercase entire file
