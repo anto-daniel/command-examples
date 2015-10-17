@@ -36,3 +36,4 @@ will work in mac as its POSIX, it doesn't take \n as directly as newline.
 :.,$s/Fortran/\U&/g    - On current line to last line , change word to uppercase
 :%s/.*/\L&/            - Lowercase entire file
 :%s/\([a-z]\)noc-mon-alerts/\1,noc-mon-alerts/g  -  \1 is a pattern of \([a-z]\)
+sed -i '/contact_groups/ s/$/,noc-mon-alerts/g' services.cfg
