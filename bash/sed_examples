@@ -37,3 +37,5 @@ will work in mac as its POSIX, it doesn't take \n as directly as newline.
 :%s/.*/\L&/            - Lowercase entire file
 :%s/\([a-z]\)noc-mon-alerts/\1,noc-mon-alerts/g  -  \1 is a pattern of \([a-z]\)
 sed -i '/contact_groups/ s/$/,noc-mon-alerts/g' services.cfg
+sed -ie '/host_name/a\'$'\n \_CITOEVENTID 7\n' $NAGIOS_CONG/Default_collector/hosts.cfg  /// For Mac
+sed -i '/host_name/a _CITOEVENTID      7' $NAGIOS_CONF/Default_collector/hosts.cfg     /// For Linux
