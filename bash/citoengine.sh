@@ -15,7 +15,7 @@ if [ ! -f ${CITO_FILE} ] ; then
 echo "please generate new $CITO_FILE File from CitoEngine and upload to the dpath /var/www/nconf/ADD-ONS"
 exit 0;
 fi
-cd /var/www/nconf/ADD-ONS
+cd $NCONF_DPL
 /usr/bin/python ./cito_config_parser.py --type nagios -c $NAGIOS_CONF/Default_collector/services.cfg --events-file $CITO_FILE --generate --out $NAGIOS_CONF/Default_collector/new_services.cfg >>error.log
 value=`echo $?`
 if [ "$value" -eq 0 ] ; then
