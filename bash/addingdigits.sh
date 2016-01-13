@@ -2,6 +2,7 @@
 
 re='^[0-9]+$'
 num=$1
+
 if ! [[ $num =~ $re  ]]
 then
     echo "Not a number"
