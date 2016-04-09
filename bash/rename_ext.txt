@@ -1,0 +1,6 @@
+root@it-vm06:~/tmp# ls
+a.sh  b.sh  c.sh  d.sh  e.sh  f.sh  g.sh  h.sh  i.sh  j.sh  k.sh  l.sh  m.sh  n.sh  o.sh  p.sh  q.sh  r.sh  s.sh  t.sh  u.sh  v.sh  w.sh  x.sh  y.sh  z.sh
+root@it-vm06:~/tmp# for i in `ls *`;do mv $i `basename $i .sh`.pl;done
+root@it-vm06:~/tmp# ls
+a.pl  b.pl  c.pl  d.pl  e.pl  f.pl  g.pl  h.pl  i.pl  j.pl  k.pl  l.pl  m.pl  n.pl  o.pl  p.pl  q.pl  r.pl  s.pl  t.pl  u.pl  v.pl  w.pl  x.pl  y.pl  z.pl
+root@it-vm06:~/tmp#
