@@ -13,7 +13,7 @@ def hello(who="world"):
 
 def prepare_deploy():
     #local("./manage.py test my_app")
-    local("git add --all && git commit")
+    local("git add --all && git commit -m 'fab deployed'")
     local("git push")
 
 def test():
