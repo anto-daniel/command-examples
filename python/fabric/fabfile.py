@@ -16,7 +16,6 @@ def prepare_deploy():
     #local("./manage.py test my_app")
     local("git add --all") 
     result = local("git commit -m 'fab deployed'")
-    print result.return_code
     if result.return_code == 0:
         local("git push")
         print result
@@ -49,3 +48,7 @@ def extract_storm_bin_dir(user=env.user):
     print "Extracting Storm bin directory"
     run('tar xvzf /tmp/storm-bin-scripts.tar.gz -C $HOME')
     run('rm -rfv /tmp/storm-bin-scripts.tar.gz')
+
+def rescan_scsi():
+    sudo('apt-get install scsitools')
+    sudo('rescan-scsi-bus')
