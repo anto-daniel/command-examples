@@ -32,6 +32,11 @@ def install_disk_prepare(user=env.user):
 def extract_storm_start_up_scripts(user=env.user):
     put('storm_start_scripts.tar.gz','/tmp')
     sudo('tar xvzf /tmp/storm_start_scripts.tar.gz -C /')
+    sudo('rm -rfv /tmp/storm_start_scripts.tar.gz')
 
 def extract_storm_bin_dir(user=env.user):
+    print "Uploading Storm Bin directory to resp hosts..."
+    put('storm-bin-scripts.tar.gz','/tmp')
     print "Extracting Storm bin directory"
+    run('tar xvzf /tmp/storm-bin-scripts.tar.gz -C $HOME')
+    run('rm -rfv /tmp/storm-bin-scripts.tar.gz')
