@@ -15,6 +15,8 @@ def hello(who="world"):
 def prepare_deploy():
     #local("./manage.py test my_app")
     local("git add --all") 
+    local("git config --global user.name 'Anto Daniel'")
+    local("git config --global user.email 'anto.daniel@gmail.com'")
     result = local("git commit -m 'fab deployed'")
     if result.return_code == 0:
         local("git push")
