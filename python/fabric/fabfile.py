@@ -28,3 +28,8 @@ def install_disk_prepare(user=env.user):
     put('PartitionandMount.py','/home/'+env.user+'/DiskPrepare')
     run('cd DiskPrepare && python DiskPrepare.py')
     run('cd DiskPrepare && python PartitionandMount.py')
+
+def extract_storm_start_up_scripts(user=env.user):
+    put('storm_start_scripts.tar.gz','/tmp')
+    sudo('tar xvzf /tmp/storm_start_scripts.tar.gz -C /')
+
