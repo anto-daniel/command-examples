@@ -52,11 +52,20 @@ def extract_storm_bin_dir(user=env.user):
     run('rm -rfv /tmp/storm-bin-scripts.tar.gz')
 
 def rescan_scsi():
-    sudo('apt-get install scsitools')
+    sudo('apt-get install scsitools -y')
     sudo('rescan-scsi-bus')
 
 def push_karaf_script():
     put('karaf','/tmp')
     sudo('cp -rfv /tmp/karaf /etc/init.d/')
     sudo('rm -rfv /tmp/karaf')
+    result = run('hostname')
+    print result
+    if "araf" in result:
+        print "karaf host"
+    elif "nfs" in result:
+        sudo("sed -i 's/karaf_apc/karaf_nfs/g' /etc/init.d/karaf")
+    else:
+        print "Not a valid host"
+
 
