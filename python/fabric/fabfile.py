@@ -33,3 +33,5 @@ def extract_storm_start_up_scripts(user=env.user):
     put('storm_start_scripts.tar.gz','/tmp')
     sudo('tar xvzf /tmp/storm_start_scripts.tar.gz -C /')
 
+def extract_storm_bin_dir(user=env.user):
+    print "Extracting Storm bin directory"
