@@ -15,6 +15,7 @@ def prepare_deploy():
     #local("./manage.py test my_app")
     local("git add --all") 
     result = local("git commit -m 'fab deployed'")
+    print result.return_code
     if result.return_code == 0:
         local("git push")
         print result
