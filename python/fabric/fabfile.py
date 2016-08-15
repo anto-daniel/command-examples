@@ -68,4 +68,6 @@ def push_karaf_script():
     else:
         print "Not a valid host"
 
+def install_nfs():
+    sudo('apt-get install nfs-kernel-server -y')
 
