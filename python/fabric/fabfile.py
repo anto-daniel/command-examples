@@ -7,6 +7,7 @@ from fabric.api import env, put
 #env.hosts = ['192.168.112.16', '192.168.120.44']
 env.user = "apcuser"
 env.password = "facetime"
+env.warn_only = True
 
 def hello(who="world"):
     print "Hello {who}!".format(who=who)
@@ -21,6 +22,8 @@ def prepare_deploy():
         print result
     elif result.return_code == 1:
         print "No commit found"
+    else:
+        print "Errors found during commit"
 
 def test():
     run('ls')
