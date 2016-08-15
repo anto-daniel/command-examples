@@ -13,8 +13,13 @@ def hello(who="world"):
 
 def prepare_deploy():
     #local("./manage.py test my_app")
-    local("git add --all && git commit -m 'fab deployed'")
-    local("git push")
+    local("git add --all") 
+    result = local("git commit -m 'fab deployed'")
+    if result.return_code == 0:
+        local("git push")
+        print result
+    elif result.return_code == 1:
+        print "No commit found"
 
 def test():
     run('ls')
