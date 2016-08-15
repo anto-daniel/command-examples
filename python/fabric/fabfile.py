@@ -20,7 +20,7 @@ def prepare_deploy():
     result = local("git commit -m 'fab deployed'")
     if result.return_code == 0:
         local("git push")
-        print result
+        print "Pushed to Git Successfully !!! :)"
     elif result.return_code == 1:
         print "No commit found"
     else:
@@ -54,3 +54,9 @@ def extract_storm_bin_dir(user=env.user):
 def rescan_scsi():
     sudo('apt-get install scsitools')
     sudo('rescan-scsi-bus')
+
+def push_karaf_script():
+    put('karaf','/tmp')
+    sudo('cp -rfv /tmp/karaf /etc/init.d/')
+    sudo('rm -rfv /tmp/karaf')
+
