@@ -71,3 +71,6 @@ def push_karaf_script():
 def install_nfs():
     sudo('apt-get install nfs-kernel-server -y')
 
+def push_ingestion_doc_scripts():
+    put('ingest_document.tar.gz','/tmp')
+    run('tar xvzf /tmp/ingest_document.tar.gz -C $HOME')
