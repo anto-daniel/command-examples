@@ -69,8 +69,22 @@ def push_karaf_script():
         print "Not a valid host"
 
 def install_nfs():
-    sudo('apt-get install nfs-kernel-server -y')
+    print "Install NFS Package in NFS Server ........"
+    sudo('apt-get install nfs-kernel-server nfs-common -y')
+    print "Appending data entry in exports file"
+    sudo('if [[ ! $(grep data1 /etc/exports) ]];then echo "/data1 *(rw,no_root_squash,no_all_squash,sync,no_subtree_check)" | tee -a /etc/exports;fi')
+    sudo('service nfs-kernel-server restart')
+    sudo('exportfs')
 
 def push_ingestion_doc_scripts():
     put('ingest_document.tar.gz','/tmp')
     run('tar xvzf /tmp/ingest_document.tar.gz -C $HOME')
+
+def ganglia_modules():
+    print "Pushing the puppet modules to the Server...."
+    put('ganglia_puppet_installation.tar.gz','/tmp')
+    print "Extracting Ganglia modules in Puppet Environment...."
+    sudo('tar xvzf /tmp/ganglia_puppet_installation.tar.gz -C /')
+ 
+def push_data_mount_point():
+    sudo('echo "/data1  /dev/sdb1   autofs  1   1"')
