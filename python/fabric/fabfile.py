@@ -61,7 +61,7 @@ def push_karaf_script():
     sudo('cp -rfv /tmp/karaf /etc/init.d/')
     sudo('rm -rfv /tmp/karaf')
     result = run('hostname')
-    print result
+    print 'Pushing karaf script in host '+result
     if "araf" in result:
         print "karaf host"
     elif "nfs" in result:
