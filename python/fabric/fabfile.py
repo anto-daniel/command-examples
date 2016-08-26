@@ -5,8 +5,8 @@ from fabric.api import run, sudo
 from fabric.api import env, put
 
 #env.hosts = ['192.168.112.16', '192.168.120.44']
-env.user = "apcuser"
-env.password = "facetime"
+env.user = "sysops"
+env.password = "alcatraz1400"
 env.warn_only = True
 
 def hello(who="world"):
@@ -14,7 +14,7 @@ def hello(who="world"):
 
 def prepare_deploy():
     #local("./manage.py test my_app")
-    local("git pull")
+    #local("git pull")
     local("git add --all") 
     local("git config --global user.name 'Anto Daniel'")
     local("git config --global user.email 'anto.daniel@gmail.com'")
@@ -88,4 +88,15 @@ def ganglia_modules():
     sudo('tar xvzf /tmp/ganglia_puppet_installation.tar.gz -C /')
  
 def push_data_mount_point():
-    sudo('echo "/data1  /dev/sdb1   autofs  1   1"')
+    sudo('mkdir -p /data1')
+    sudo('mkdir -p /logs')
+    sudo('echo "/dev/sdb1       /data1      auto    defaults    0   0" | tee -a /etc/fstab')
+    sudo('echo "/dev/sdc1       /logs      auto    defaults    0   0" | tee -a /etc/fstab')
+    sudo('mount -a')
+
+def check_disk():
+    run('df -h')
+
+
+def lsblk():
+    sudo('lsblk')
