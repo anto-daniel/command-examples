@@ -88,10 +88,9 @@ def ganglia_modules():
     sudo('tar xvzf /tmp/ganglia_puppet_installation.tar.gz -C /')
  
 def push_data_mount_point():
-    sudo('mkdir -p /data1')
-    sudo('mkdir -p /logs')
-    sudo('echo "/dev/sdb1       /data1      auto    defaults    0   0" | tee -a /etc/fstab')
-    sudo('echo "/dev/sdc1       /logs      auto    defaults    0   0" | tee -a /etc/fstab')
+    sudo('mkdir -p /nfs-path/{failedxml,stormexports}')
+    sudo('echo "fab-pnam-nfs-h1:/data1/failedxml   /nfs-path/failedxml   nfs rw,exec,user   0     0" | tee -a /etc/fstab')
+    sudo('echo "fab-pnam-nfs-h1:/data1/stormexports   /nfs-path/stormexports   nfs rw,exec,user   0     0" | tee -a /etc/fstab')
     sudo('mount -a')
 
 def check_disk():
