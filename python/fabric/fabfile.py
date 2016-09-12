@@ -8,6 +8,7 @@ from fabric.api import env, put
 env.user = "sysops"
 env.password = "alcatraz1400"
 env.warn_only = True
+env.skip_bad_hosts = True
 
 def hello(who="world"):
     print "Hello {who}!".format(who=who)
@@ -49,7 +50,7 @@ def extract_storm_bin_dir(user=env.user):
     print "Uploading Storm Bin directory to resp hosts..."
     put('storm-bin-scripts.tar.gz','/tmp')
     print "Extracting Storm bin directory"
-    run('tar xvzf /tmp/storm-bin-scripts.tar.gz -C $HOME')
+    sudo('tar xvzf /tmp/storm-bin-scripts.tar.gz -C /')
     run('rm -rfv /tmp/storm-bin-scripts.tar.gz')
 
 def rescan_scsi():
@@ -76,6 +77,7 @@ def install_nfs():
     sudo('if [[ ! $(grep data1 /etc/exports) ]];then echo "/data1 *(rw,no_root_squash,no_all_squash,sync,no_subtree_check)" | tee -a /etc/exports;fi')
     sudo('service nfs-kernel-server restart')
     sudo('exportfs')
+    sudo('mkdir -p /data1/{failedxml,stormexports}')
 
 def push_ingestion_doc_scripts():
     put('ingest_document.tar.gz','/tmp')
@@ -88,10 +90,12 @@ def ganglia_modules():
     sudo('tar xvzf /tmp/ganglia_puppet_installation.tar.gz -C /')
  
 def push_data_mount_point():
+    sudo('apt-get install nfs-common -y')
     sudo('mkdir -p /nfs-path/{failedxml,stormexports}')
     sudo('echo "fab-pnam-nfs-h1:/data1/failedxml   /nfs-path/failedxml   nfs rw,exec,user   0     0" | tee -a /etc/fstab')
     sudo('echo "fab-pnam-nfs-h1:/data1/stormexports   /nfs-path/stormexports   nfs rw,exec,user   0     0" | tee -a /etc/fstab')
     sudo('mount -a')
+    run('df -h')
 
 def check_disk():
     run('df -h')
@@ -99,3 +103,9 @@ def check_disk():
 
 def lsblk():
     sudo('lsblk')
+
+def create_app_user():
+    sudo('adduser appsuser  --home /apps --disabled-password --disabled-login --gecos "" --shell /bin/false')
+
+def create_ceph_user():
+    sudo('echo -e "ceph\nceph\n" | adduser appsuser  --home /apps --gecos "" --shell /bin/sh')
