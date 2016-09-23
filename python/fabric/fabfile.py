@@ -57,6 +57,12 @@ def rescan_scsi():
     sudo('apt-get install scsitools -y')
     sudo('rescan-scsi-bus')
 
+def push_ceph():
+    put('/tmp/ceph.conf','/tmp')
+    sudo('cp -rfv /tmp/ceph.conf /etc/ceph')
+    put('/tmp/rbdmap','/tmp')
+    sudo('cp -rfv /tmp/rbdmap /etc/ceph')
+
 def push_karaf_script():
     put('karaf','/tmp')
     sudo('cp -rfv /tmp/karaf /etc/init.d/')
@@ -92,10 +98,17 @@ def ganglia_modules():
 def push_data_mount_point():
     sudo('apt-get install nfs-common -y')
     sudo('mkdir -p /nfs-path/{failedxml,stormexports}')
-    sudo('echo "fab-pnam-nfs-h1:/data1/failedxml   /nfs-path/failedxml   nfs rw,exec,user   0     0" | tee -a /etc/fstab')
-    sudo('echo "fab-pnam-nfs-h1:/data1/stormexports   /nfs-path/stormexports   nfs rw,exec,user   0     0" | tee -a /etc/fstab')
+    sudo('echo "fab-cs01-nfs-h1:/data1/failedxml   /nfs-path/failedxml   nfs rw,exec,user   0     0" | tee -a /etc/fstab')
+    sudo('echo "fab-cs01-nfs-h1:/data1/stormexports   /nfs-path/stormexports   nfs rw,exec,user   0     0" | tee -a /etc/fstab')
     sudo('mount -a')
     run('df -h')
+
+def set_ulimit():
+    sudo('echo "*               soft    nofile          65535" | tee -a /etc/security/limits.conf')
+    sudo('echo "*               hard    nofile          65535" | tee -a /etc/security/limits.conf')
+    sudo('echo "*               soft    nproc           65535" | tee -a /etc/security/limits.conf')
+    sudo('echo "*               hard    nproc           65535" | tee -a /etc/security/limits.conf')
+    sudo('sysctl -p')
 
 def check_disk():
     run('df -h')
@@ -109,3 +122,21 @@ def create_app_user():
 
 def create_ceph_user():
     sudo('echo -e "ceph\nceph\n" | adduser appsuser  --home /apps --gecos "" --shell /bin/sh')
+
+def run_puppet_agent():
+    sudo('puppet agent -t --environment=QA --debug')
+
+def install_puppet_ganglia_agent():
+    sudo('puppet agent -t --environment=development --debug')
+    sudo('service ganglia-monitor restart')
+
+
+def copy_townsend_keys():
+    sudo('cp -rfv /tmp/keystore /apps/config')
+
+def usermod_appsuser():
+    sudo('usermod -s /bin/bash appsuser')
+    sudo("echo -e \"alcatraz1400\nalcatraz1400\n\" | passwd appsuser")
+    sudo("usermod -a -G sudo appsuser")
+
+
