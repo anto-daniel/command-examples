@@ -63,6 +63,13 @@ def push_ceph():
     put('/tmp/rbdmap','/tmp')
     sudo('cp -rfv /tmp/rbdmap /etc/ceph')
 
+def push_townsend():
+    put('/home/sysops/townsend/admin_one_keystore.jks','/tmp')
+    sudo('cp -rfv /tmp/admin_one_keystore.jks /apps/config/keystore/')
+    put('/home/sysops/townsend/CATrustStore.jks','/tmp')
+    sudo('cp -rfv /tmp/CATrustStore.jks /apps/config/keystore/')
+    put('/home/sysops/townsend/client_actiance_cert_keystore.jks','/tmp')
+    sudo('cp -rfv /tmp/client_actiance_cert_keystore.jks /apps/config/keystore/')
 def push_karaf_script():
     put('karaf','/tmp')
     sudo('cp -rfv /tmp/karaf /etc/init.d/')
@@ -139,4 +146,7 @@ def usermod_appsuser():
     sudo("echo -e \"alcatraz1400\nalcatraz1400\n\" | passwd appsuser")
     sudo("usermod -a -G sudo appsuser")
 
-
+def glib_vulnerable():
+    put('a.out','/home/sysops')
+    sudo('chmod a+x a.out')
+    sudo('./a.out')
