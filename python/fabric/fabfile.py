@@ -70,6 +70,7 @@ def push_townsend():
     sudo('cp -rfv /tmp/CATrustStore.jks /apps/config/keystore/')
     put('/home/sysops/townsend/client_actiance_cert_keystore.jks','/tmp')
     sudo('cp -rfv /tmp/client_actiance_cert_keystore.jks /apps/config/keystore/')
+
 def push_karaf_script():
     put('karaf','/tmp')
     sudo('cp -rfv /tmp/karaf /etc/init.d/')
