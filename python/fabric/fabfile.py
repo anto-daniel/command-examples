@@ -58,10 +58,10 @@ def rescan_scsi():
     sudo('rescan-scsi-bus')
 
 def push_ceph():
-    put('/tmp/ceph.conf','/tmp')
-    sudo('cp -rfv /tmp/ceph.conf /etc/ceph')
-    put('/tmp/rbdmap','/tmp')
-    sudo('cp -rfv /tmp/rbdmap /etc/ceph')
+    sudo('rm -rfv /tmp/ceph')
+    put('ceph/ceph','/tmp')
+    sudo('rm -rfv /etc/ceph/*')
+    sudo('cp -rfv /tmp/ceph/* /etc/ceph')
 
 def push_townsend():
     put('/home/sysops/townsend/admin_one_keystore.jks','/tmp')
@@ -106,8 +106,8 @@ def ganglia_modules():
 def push_data_mount_point():
     sudo('apt-get install nfs-common -y')
     sudo('mkdir -p /nfs-path/{failedxml,stormexports}')
-    sudo('echo "fab-cs01-nfs-h1:/data1/failedxml   /nfs-path/failedxml   nfs rw,exec,user   0     0" | tee -a /etc/fstab')
-    sudo('echo "fab-cs01-nfs-h1:/data1/stormexports   /nfs-path/stormexports   nfs rw,exec,user   0     0" | tee -a /etc/fstab')
+    sudo('echo "fab-eng02-nfs-h1:/data1/failedxml   /nfs-path/failedxml   nfs rw,exec,user   0     0" | tee -a /etc/fstab')
+    sudo('echo "fab-eng02-nfs-h1:/data1/stormexports   /nfs-path/stormexports   nfs rw,exec,user   0     0" | tee -a /etc/fstab')
     sudo('mount -a')
     run('df -h')
 

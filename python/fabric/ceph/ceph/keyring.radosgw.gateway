@@ -1,0 +1,6 @@
+[client.radosgw.gateway0]
+	key = AQAR+PVXOLDDMBAAruo6ImY+9uICCX6vyKkb/Q==
+	caps mon = "allow rw"
+	caps osd = "allow rwx"
+[client.radosgw.gateway2]
+	key = AQD59/VXKJUtHxAAFOhSwStFS1W8RaqoQkG/rg==
