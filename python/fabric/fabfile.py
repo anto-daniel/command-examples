@@ -155,3 +155,6 @@ def glib_vulnerable():
 
 def add_puppet_host():
     sudo('sed -i "$ a 192.168.126.153 puppet.actiance.local" /etc/hosts')
+
+def passwdless_authentication():
+   sudo('su -c "./passwdless_auth.sh" -s /bin/bash appsuser')
