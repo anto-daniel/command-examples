@@ -104,10 +104,11 @@ def ganglia_modules():
     sudo('tar xvzf /tmp/ganglia_puppet_installation.tar.gz -C /')
  
 def push_data_mount_point():
+    env = run("hostname | awk -F- '{print $2}'")
     sudo('apt-get install nfs-common -y')
     sudo('mkdir -p /nfs-path/{failedxml,stormexports}')
-    sudo('echo "fab-jpdev01-nfs-h1:/data1/failedxml   /nfs-path/failedxml   nfs rw,exec,user   0     0" | tee -a /etc/fstab')
-    sudo('echo "fab-jpdev01-nfs-h1:/data1/stormexports   /nfs-path/stormexports   nfs rw,exec,user   0     0" | tee -a /etc/fstab')
+    sudo('echo "fab-'+env+'-nfs-h1:/data1/failedxml   /nfs-path/failedxml   nfs rw,exec,user   0     0" | tee -a /etc/fstab')
+    sudo('echo "fab-'+env+'-nfs-h1:/data1/stormexports   /nfs-path/stormexports   nfs rw,exec,user   0     0" | tee -a /etc/fstab')
     sudo('mount -a')
     run('df -h')
 
@@ -119,7 +120,7 @@ def set_ulimit():
     sudo('sysctl -p')
 
 def check_disk():
-    run('df -h')
+    run('df -h /data* /logs')
 
 
 def lsblk():
