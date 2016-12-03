@@ -28,10 +28,6 @@ def prepare_deploy():
     else:
         print "Errors found during commit"
 
-def test():
-    run('ls')
-
-
 def install_disk_prepare(user=env.user):
     sudo('apt-get install python-dev python-pip libffi-dev -y')
     sudo('pip install paramiko cryptography==1.2.1')
