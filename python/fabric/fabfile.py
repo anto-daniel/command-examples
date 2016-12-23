@@ -103,8 +103,8 @@ def push_data_mount_point():
     env = run("hostname | awk -F- '{print $2}'")
     sudo('apt-get install nfs-common -y')
     sudo('mkdir -p /nfs-path/{failedxml,stormexports}')
-    sudo('echo "fab-'+env+'-nfs-h1:/data1/failedxml   /nfs-path/failedxml   nfs rw,exec,user   0     0" | tee -a /etc/fstab')
-    sudo('echo "fab-'+env+'-nfs-h1:/data1/stormexports   /nfs-path/stormexports   nfs rw,exec,user   0     0" | tee -a /etc/fstab')
+    sudo('echo "fab-'+env+'-nfs-h7:/data1/failedxml   /nfs-path/failedxml   nfs rw,exec,user   0     0" | tee -a /etc/fstab')
+    sudo('echo "fab-'+env+'-nfs-h7:/data1/stormexports   /nfs-path/stormexports   nfs rw,exec,user   0     0" | tee -a /etc/fstab')
     sudo('mount -a')
     run('df -h')
 
@@ -137,7 +137,9 @@ def install_puppet_ganglia_agent():
 
 
 def copy_townsend_keys():
-    sudo('cp -rfv /tmp/keystore /apps/config')
+    put('townsend_keys','/tmp')
+    sudo('rm -rfv /apps/config/keystore/*')
+    sudo('cp -rfv /tmp/townsend_keys/* /apps/config/keystore')
 
 def usermod_appsuser():
     sudo('usermod -s /bin/bash appsuser')
@@ -154,3 +156,6 @@ def add_puppet_host():
 
 def passwdless_authentication():
    sudo('su -c "./passwdless_auth.sh" -s /bin/bash appsuser')
+
+def backup():
+    sudo('cp -rfv /apps /opt')
