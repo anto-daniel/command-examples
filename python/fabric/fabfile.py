@@ -21,7 +21,8 @@ def prepare_deploy():
     local("git config --global user.email 'anto.daniel@gmail.com'")
     result = local("git commit -m 'fab deployed'")
     if result.return_code == 0:
-        local("git push origin master")
+        #local("git push origin master")
+	local("./gitpush.sh")
         print "Pushed to Git Successfully !!! :)"
     elif result.return_code == 1:
         print "No commit found"
