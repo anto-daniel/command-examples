@@ -1,2 +1,5 @@
 [client.admin]
-	key = AQAe7/VXoOvNMhAAy0DFJQJR5GxO1Moe7vav5Q==
+	key = AQDV23BYR3aUGBAAICixb5EnBFXvHoNMSOoOfw==
+	caps mds = "allow *"
+	caps mon = "allow *"
+	caps osd = "allow *"

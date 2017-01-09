@@ -144,7 +144,7 @@ def copy_townsend_keys():
 
 def usermod_appsuser():
     sudo('usermod -s /bin/bash appsuser')
-    sudo("echo -e \"alcatraz1400\nalcatraz1400\n\" | passwd appsuser")
+    #sudo("echo -e \"ceph\nceph\n\" | passwd appsuser")
     sudo("usermod -a -G sudo appsuser")
 
 def glib_vulnerable():
@@ -156,7 +156,24 @@ def add_puppet_host():
     sudo('sed -i "$ a 192.168.126.153 puppet.actiance.local" /etc/hosts')
 
 def passwdless_authentication():
-   sudo('su -c "./passwdless_auth.sh" -s /bin/bash appsuser')
+   put('passwdless_auth.sh','/home/sysops')
+   put('hosts','/home/sysops')
+   put('sample.sh','/home/sysops')
+   sudo('apt-get install expect sshpass -y')
+   sudo('chmod a+x passwdless_auth.sh')
+   run('/home/sysops/passwdless_auth.sh')
+   run("ssh-keygen -f $HOME/.ssh/id_rsa -t rsa -N '' ")
+   sudo('chmod 777 sample.sh')
+   run('./sample.sh')
+   #sudo('su -c "./passwdless_auth.sh" -s /bin/bash appsuser')
 
 def backup():
     sudo('cp -rfv /apps /opt')
+
+def del_cephuser():
+    sudo('delgroup ceph')
+    sudo('deluser ceph')
+
+def add_appsuser_ceph():
+    sudo('echo "appsuser ALL = (root) NOPASSWD:ALL" | sudo tee /etc/sudoers.d/appsuser')
+    sudo('chmod 0440 /etc/sudoers.d/appsuser')
