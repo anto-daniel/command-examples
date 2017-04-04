@@ -13,6 +13,20 @@ env.skip_bad_hosts = True
 def hello(who="world"):
     print "Hello {who}!".format(who=who)
 
+def puppet_agent_install():
+   sudo("apt-get purge facter puppet puppet-common puppet-common puppetlabs-release -y")
+   sudo("apt-get update")
+   sudo("apt-get autoremove -y")
+   sudo("apt-get install puppet puppet-common -y")
+   sudo("cp /etc/hosts /etc/hosts.backup")
+   # sudo("echo 10.171.208.213 fab-jpus01-puppet-h6 puppet puppet.actiance.local | tee -a /etc/hosts")
+   sudo("sed -i '/postrun_command/ a server=fab-prod02-puppet-h5.actiance.local' /etc/puppet/puppet.conf")
+   sudo('sed -i -e "$ a [agent]" /etc/puppet/puppet.conf')
+   sudo('sed -i -e "$ a report=true" /etc/puppet/puppet.conf')
+   sudo("puppet agent --enable")
+   sudo("systemctl stop puppet")
+   sudo("cd /var/lib/puppet && rm -rfv ssl/")
+
 def prepare_deploy():
     #local("./manage.py test my_app")
     #local("git pull")
@@ -36,6 +50,20 @@ def install_disk_prepare(user=env.user):
     put('PartitionandMount.py','/home/'+env.user+'/DiskPrepare')
     run('cd DiskPrepare && python DiskPrepare.py')
     run('cd DiskPrepare && python PartitionandMount.py')
+
+def puppet_agent_1604():
+    #sudo("apt-get purge --auto-remove puppet-common")
+    #sudo("apt-get purge --auto-remove puppetlabs-release")
+    #sudo("apt-get install -y puppet-common=3.8.5-2")
+    #sudo("sudo apt-get -y install puppet=3.8.5-2")
+    sudo("puppet agent --enable")
+    sudo("systemctl stop puppet")
+    sudo("systemctl disable puppet")
+    sudo("systemctl status puppet")
+    sudo("sed -i 's/server=.*/server=fab-prod02-puppet-h5\.actiance\.local/' /etc/puppet/puppet.conf")
+    sudo("apt-get install mcollective -y")
+    sudo("puppet agent --environment=agent --debug --test")
+    sudo("systemctl restart mcollective")
 
 def extract_storm_start_up_scripts(user=env.user):
     put('storm_start_scripts.tar.gz','/tmp')
@@ -103,8 +131,8 @@ def push_data_mount_point():
     env = run("hostname | awk -F- '{print $2}'")
     sudo('apt-get install nfs-common -y')
     sudo('mkdir -p /nfs-path/{failedxml,stormexports}')
-    sudo('echo "fab-'+env+'-nfs-h7:/data1/failedxml   /nfs-path/failedxml   nfs rw,exec,user   0     0" | tee -a /etc/fstab')
-    sudo('echo "fab-'+env+'-nfs-h7:/data1/stormexports   /nfs-path/stormexports   nfs rw,exec,user   0     0" | tee -a /etc/fstab')
+    sudo('echo "fab-'+env+'-nfs-h5:/data1/failedxml   /nfs-path/failedxml   nfs rw,exec,user   0     0" | tee -a /etc/fstab')
+    sudo('echo "fab-'+env+'-nfs-h5:/data1/stormexports   /nfs-path/stormexports   nfs rw,exec,user   0     0" | tee -a /etc/fstab')
     sudo('mount -a')
     run('df -h')
 
@@ -159,3 +187,62 @@ def passwdless_authentication():
 
 def backup():
     sudo('cp -rfv /apps /opt')
+def install_tokenizer():
+    sudo('/usr/share/elasticsearch/bin/plugin install file:///tmp/actiance-standard-tokenizer-1.0.zip --verbose')
+    sudo('/usr/share/elasticsearch/bin/plugin list')
+
+def start_elastic():
+    sudo('service elasticsearch start')
+    sudo('service elasticsearch status')
+
+def stop_hazelcast():
+    sudo('systemctl stop hazelcast')
+
+def start_hazelcast():
+    sudo('systemctl start hazelcast')
+
+def stop_storm():
+    sudo('systemctl stop stormsupervisor')
+    sudo('systemctl stop stormnimbus')
+    sudo('systemctl stop stormui')
+
+def start_storm():
+    sudo('systemctl start stormsupervisor')
+    sudo('systemctl start stormnimbus')
+    sudo('systemctl start stormui')
+
+def stop_karaf():
+    sudo('systemctl stop karaf')
+
+def start_karaf():
+    sudo('systemctl start karaf')
+
+def stop_supervisor():
+    sudo('systemctl stop stormsupervisor')
+
+def start_supervisor():
+    sudo('systemctl start stormsupervisor')
+
+def add_keyfile_to_mongo():
+    sudo('echo --auth = true | tee -a /lib/systemd/system/mongodb.service')
+    sudo('echo --keyFile =  /etc/ssl/mongokeyfile | tee -a /lib/systemd/system/mongodb.service')
+    run('cat /lib/systemd/system/mongodb.service')
+
+def del_line_to_mongo():
+    sudo("sed -i '$ d' /lib/systemd/system/mongodb.service")
+
+def mongo_auth_router():
+    sudo("sed -i '/ExecStart/ s/$/\ --keyFile  \/etc\/ssl\/mongokeyfile/' /lib/systemd/system/mongodb.service")
+    sudo("systemctl daemon-reload")
+    #sudo("sed -i '/ExecStart/ s/--auth = true --keyFile =  \/etc\/ssl\/mongokeyfile/--auth true --keyFile \/etc\/ssl\/mongokeyfile/' /lib/systemd/system/mongodb.service")
+    #sudo("sed -i '/ExecStart/ s/--auth true//' /lib/systemd/system/mongodb.service")
+    put('/tmp/mongokeyfile','/tmp')
+    sudo('cp -rfv /tmp/mongokeyfile /etc/ssl')
+    sudo('chmod 400 /etc/ssl/mongokeyfile')
+    sudo('chown appsuser:appsuser /etc/ssl/mongokeyfile')
+    sudo('systemctl start mongodb')
+    #run('cat /lib/systemd/system/mongodb.service')
+
+def change_auth():
+    sudo("sed -i '/server.mongo.auth.enabled/ s/false/true/' /apps/karaf_nfs/etc/actiance/apc-system/apc-config/server.properties")
+    sudo("sed -i '/JQ24Zfw31VTGH3Pecg8\/zQ==/ s/JQ24Zfw31VTGH3Pecg8\/zQ==/pr8d8CSVJI1yRPlSk1GHxA==/g' /apps/karaf_nfs/etc/actiance/apc-system/apc-config/server.properties")
