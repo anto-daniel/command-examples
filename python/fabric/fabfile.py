@@ -19,13 +19,15 @@ def puppet_agent_install():
    sudo("apt-get autoremove -y")
    sudo("apt-get install puppet puppet-common -y")
    sudo("cp /etc/hosts /etc/hosts.backup")
-   # sudo("echo 10.171.208.213 fab-jpus01-puppet-h6 puppet puppet.actiance.local | tee -a /etc/hosts")
-   sudo("sed -i '/postrun_command/ a server=fab-prod02-puppet-h5.actiance.local' /etc/puppet/puppet.conf")
+   sudo("echo 10.164.132.210 fab-emea01-puppet-h3 puppet puppet.actiance.local | tee -a /etc/hosts")
+   sudo("sed -i '/postrun_command/ a server=fab-emea01-puppet-h3.actiance.local' /etc/puppet/puppet.conf")
    sudo('sed -i -e "$ a [agent]" /etc/puppet/puppet.conf')
    sudo('sed -i -e "$ a report=true" /etc/puppet/puppet.conf')
    sudo("puppet agent --enable")
    sudo("systemctl stop puppet")
+   sudo("systemctl disable puppet")
    sudo("cd /var/lib/puppet && rm -rfv ssl/")
+   sudo("mkdir -v -p /apps && chown -v -R appsuser:appsuser /apps")
 
 def prepare_deploy():
     #local("./manage.py test my_app")
@@ -59,8 +61,8 @@ def puppet_agent_1604():
     sudo("puppet agent --enable")
     sudo("systemctl stop puppet")
     sudo("systemctl disable puppet")
-    sudo("systemctl status puppet")
-    sudo("sed -i 's/server=.*/server=fab-prod02-puppet-h5\.actiance\.local/' /etc/puppet/puppet.conf")
+    #sudo("systemctl status puppet")
+    #sudo("sed -i 's/server=.*/server=fab-prod02-puppet-h5\.actiance\.local/' /etc/puppet/puppet.conf")
     sudo("apt-get install mcollective -y")
     sudo("puppet agent --environment=agent --debug --test")
     sudo("systemctl restart mcollective")
@@ -131,8 +133,8 @@ def push_data_mount_point():
     env = run("hostname | awk -F- '{print $2}'")
     sudo('apt-get install nfs-common -y')
     sudo('mkdir -p /nfs-path/{failedxml,stormexports}')
-    sudo('echo "fab-'+env+'-nfs-h5:/data1/failedxml   /nfs-path/failedxml   nfs rw,exec,user   0     0" | tee -a /etc/fstab')
-    sudo('echo "fab-'+env+'-nfs-h5:/data1/stormexports   /nfs-path/stormexports   nfs rw,exec,user   0     0" | tee -a /etc/fstab')
+    sudo('echo "fab-'+env+'-nfs-h2:/data1/failedxml   /nfs-path/failedxml   nfs rw,exec,user   0     0" | tee -a /etc/fstab')
+    sudo('echo "fab-'+env+'-nfs-h2:/data1/stormexports   /nfs-path/stormexports   nfs rw,exec,user   0     0" | tee -a /etc/fstab')
     sudo('mount -a')
     run('df -h')
 
@@ -244,5 +246,107 @@ def mongo_auth_router():
     #run('cat /lib/systemd/system/mongodb.service')
 
 def change_auth():
-    sudo("sed -i '/server.mongo.auth.enabled/ s/false/true/' /apps/karaf_nfs/etc/actiance/apc-system/apc-config/server.properties")
-    sudo("sed -i '/JQ24Zfw31VTGH3Pecg8\/zQ==/ s/JQ24Zfw31VTGH3Pecg8\/zQ==/pr8d8CSVJI1yRPlSk1GHxA==/g' /apps/karaf_nfs/etc/actiance/apc-system/apc-config/server.properties")
+    sudo('sed -i "/server.mongo.auth.enabled/ s/false/true/" /apps/karaf_nfs/etc/actiance/apc-system/apc-config/server.properties')
+    sudo('sed -i "/JQ24Zfw31VTGH3Pecg8.zQ==/ s/password=.*/pr8d8CSVJI1yRPlSk1GHxA==/g" /apps/karaf_nfs/etc/actiance/apc-system/apc-config/server.properties')
+    sudo('sed -i "/server.mongo.auth.enabled/ s/false/true/" /apps/karaf/etc/actiance/apc-system/apc-config/server.properties')
+    sudo('sed -i "/JQ24Zfw31VTGH3Pecg8.zQ==/ s/password=.*/password=pr8d8CSVJI1yRPlSk1GHxA==/g" /apps/karaf/etc/actiance/apc-system/apc-config/server.properties')
+    sudo('sed -i "/server.mongo.auth.enabled/ s/false/true/" /apps/alcatraz_cache-1.0/conf/server.properties')
+    sudo('sed -i "/JQ24Zfw31VTGH3Pecg8.zQ==/ s/password=.*/password=pr8d8CSVJI1yRPlSk1GHxA==/g" /apps/alcatraz_cache-1.0/conf/server.properties')
+    sudo('sed -i "/server.mongo.auth.enabled/ s/false/true/" /apps/storm-1.0.2/conf/server.properties')
+    sudo('sed -i "/JQ24Zfw31VTGH3Pecg8.zQ==/ s/password=.*/password=pr8d8CSVJI1yRPlSk1GHxA==/g" /apps/storm-1.0.2/conf/server.properties')
+    
+def push_dr_hosts():
+    put('drhosts','/tmp')
+    sudo('cat /tmp/drhosts | tee -a /etc/hosts')
+
+def push_p_hosts():
+    put('phosts','/tmp')
+    sudo('cat /tmp/phosts | tee -a /etc/hosts')
+
+def push_mongo_keyfile_computes():
+    put('mongokeyfile','/tmp')
+    sudo('cp -rfv /tmp/mongokeyfile /etc/ssl')
+    sudo('chmod 400 /etc/ssl/mongokeyfile')
+    sudo('chown -v appsuser:appsuser /etc/ssl/mongokeyfile')
+
+def push_mongo_service_script():
+    put('mongod.service','/tmp')
+    put('mongodb.service','/tmp')
+    sudo('cp -rfv /tmp/mongod.service /lib/systemd/system/')
+    sudo('cp -rfv /tmp/mongodb.service /lib/systemd/system/')
+    sudo('systemctl daemon-reload')
+    sudo('systemctl stop mongodb')
+    sudo('systemctl stop mongod')
+    sudo('rm -rfv /tmp/mongo*.sock')
+    sudo('systemctl start mongodb')
+    sudo('systemctl start mongod')
+
+def push_ceph_keys_to_computes():
+    put('ceph.tar.gz','/tmp')
+    sudo('rm -rfv /etc/ceph/*')
+    sudo('tar xvzf /tmp/ceph.tar.gz -C /etc/ceph')
+    sudo('chown -v -R appsuser:appsuser /etc/ceph')
+
+def push_keystore():
+    put('.keystore','/tmp')
+    sudo('mv /tmp/.keystore /apps/karaf/etc/security')
+    sudo('chown appsuser:appsuser /apps/karaf/etc/security/.keystore')
+    sudo('ls -la /apps/karaf/etc/security/.keystore')
+
+def change_sp_karaf():
+    sudo('sed -n "/fab-emea01-twn/ p" /apps/karaf/etc/actiance/apc-system/apc-config/server.properties')
+    sudo('sed -i "s/fab-emea01-twn-h1/fab-emea01-twn-h2/g" /apps/karaf/etc/actiance/apc-system/apc-config/server.properties')
+    sudo('sed -n "/fab-emea01-twn/ p" /apps/karaf/etc/actiance/apc-system/apc-config/server.properties')
+
+def change_sp():
+    fab = run("hostname | awk -F- '{print $3}'")
+    #print fab
+    if fab == "haz":
+        print "hazelcast"
+    if fab == "stm":
+        print "storm"
+    if fab == "karafui" or fab == "karafdig":
+        print "karaf"
+        put('server.properties','/tmp')
+        sudo("cp -rfv /tmp/server.properties /apps/karaf/etc/actiance/apc-system/apc-config/")
+        #sudo("sed -i '$ a 10.164.111.186  vip-jpemea01-egw01' /etc/hosts")
+    if fab == "nfs":
+        print "nfs"
+
+
+    
+def add_host_entry(ip,hostname):
+    sudo('sed -i "$ a '+ip+' '+hostname+' devtest06.dig.jpmc.actiance.net" /etc/hosts')
+
+def change_service_script():
+    fab = run("hostname | awk -F- '{print $3}'")
+    #print fab
+    if fab == "haz":
+        sudo('sed -i "s/64000/65535/" /lib/systemd/system/hazelcast.service')
+        sudo("systemctl daemon-reload")
+    if fab == "stm":
+        sudo('sed -i "s/64000/65535/" /etc/systemd/system/stormnimbus.service')
+        sudo('sed -i "s/64000/65535/" /etc/systemd/system/stormsupervisor.service')
+        sudo('sed -i "s/64000/65535/" /etc/systemd/system/stormnimbus.service')
+        sudo("systemctl daemon-reload")
+    if fab == "karafui" or fab == "karafdig":
+        sudo('sed -i "s/64000/65535/" /etc/systemd/system/karaf.service')
+        sudo("systemctl daemon-reload")
+    if fab == "nfs":
+        sudo('sed -i "s/64000/65535/" /lib/systemd/system/karaf.service')
+        sudo("systemctl daemon-reload")
+
+def change_server_property_value(key,value):
+    fab = run("hostname | awk -F- '{print $3}'")
+    if fab == "haz":
+        sudo('sed -i "/'+key+'/ s/'+key+'=.*/'+key+'='+value+'/g" /apps/alcatraz_cache-1.0/conf/server.properties')
+    if fab == "stm":
+        sudo('sed -i "/'+key+'/ s/'+key+'=.*/'+key+'='+value+'/g" /apps/storm-1.0.2/conf/*.properties')
+    if fab == "karafui" or fab == "karafdig":
+        sudo('sed -i "/'+key+'/ s/'+key+'=.*/'+key+'='+value+'/g" /apps/karaf/etc/actiance/apc-system/apc-config/server.properties')
+    if fab == "nfs":
+        sudo('sed -i "/'+key+'/ s/'+key+'=.*/'+key+'='+value+'/g" /apps/karaf_nfs/etc/actiance/apc-system/apc-config/server.properties')
+
+
+
+
