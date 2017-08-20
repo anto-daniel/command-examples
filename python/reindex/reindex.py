@@ -40,4 +40,8 @@ for job in jobs:
 for id in true_ids:
     print id
     l = db.job_schedule.find({"_id":id})
-    print l
+    inst = l[0]
+    status = inst["job_status"]
+    while status == "COMPLETED":
+        print  "job id:"+id+" is in "+status+" status"
+        time.sleep(1)
