@@ -118,22 +118,30 @@ try:
         print "error", e
 except socket.gaierror as e:
     print "\n"
-    print "ERROR: Host 192.168.56.101 not reachable. Please provide proper hostname"
+    print "ERROR: Host "+host+" not reachable. Please provide proper hostname"
     sys.exit()
 
 
-for doc in lfm:
-    print doc
-    id = doc["_id"]
-    status = doc["job_status"]
+#for doc in lfm:
+#    print doc
+#    id = doc["_id"]
+#    status = doc["job_status"]
+#    while status != "COMPLETED":
+#        print  "job id:"+id+" is in "+status+" status"
+#        time.sleep(1)
+#        status = job_status(id,"job_schedule")
+#        print status
+
+
+for id in true_ids:
+    print id
+    l = db.job_schedule.find({"_id":id})
+    inst = l[0]
+    status = inst["job_status"]
     while status != "COMPLETED":
         print  "job id:"+id+" is in "+status+" status"
         time.sleep(1)
         status = job_status(id,"job_schedule")
         print status
-
-
-for id in true_ids:
-    #print id
     print id+": setting it back to true"
     db.job_schedule.update({"_id": id}, { '$set': {"job_active_fl": True}})
