@@ -83,6 +83,9 @@ for elem in pqry_refined:
     reindex_failed_msg.append(elem)
 
 for ele in reindex_failed_msg:
+    print "reindex:reindex_failed_msg"
+    ele["_id"] = ele["gcid"]
+    del ele["gcid"]
     print ele
 used = []
 unique_docs = [x for x in reindex_failed_msg if x not in used and used.append(x)]
@@ -122,26 +125,26 @@ except socket.gaierror as e:
     sys.exit()
 
 
-#for doc in lfm:
-#    print doc
-#    id = doc["_id"]
-#    status = doc["job_status"]
-#    while status != "COMPLETED":
-#        print  "job id:"+id+" is in "+status+" status"
-#        time.sleep(1)
-#        status = job_status(id,"job_schedule")
-#        print status
-
-
-for id in true_ids:
-    print id
-    l = db.job_schedule.find({"_id":id})
-    inst = l[0]
-    status = inst["job_status"]
+for doc in lfm:
+    print doc
+    id = doc["_id"]
+    status = doc["job_status"]
     while status != "COMPLETED":
         print  "job id:"+id+" is in "+status+" status"
         time.sleep(1)
         status = job_status(id,"job_schedule")
         print status
-    print id+": setting it back to true"
-    db.job_schedule.update({"_id": id}, { '$set': {"job_active_fl": True}})
+
+
+#for id in true_ids:
+#    print id
+#    l = db.job_schedule.find({"_id":id})
+#    inst = l[0]
+#    status = inst["job_status"]
+#    while status != "COMPLETED":
+#        print  "job id:"+id+" is in "+status+" status"
+#        time.sleep(1)
+#        status = job_status(id,"job_schedule")
+#        print status
+#    print id+": setting it back to true"
+#    db.job_schedule.update({"_id": id}, { '$set': {"job_active_fl": True}})
