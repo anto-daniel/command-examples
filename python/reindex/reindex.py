@@ -124,7 +124,7 @@ print "New documents got inserted in reindex_gcid "
 #for doc in pdb.reindex_gcid.find():
 #    print doc
 
-lfm =  db.job_schedule.find({}).sort("job_create_time",-1)
+
 reindex_lag = get_lag("reindexconsumers","reindex","fab-jpus01-zoo-h1:2471")
 while reindex_lag != 0:
     print "Reindex lag still exists. Need to wait till the lag becomes zero"
@@ -147,6 +147,7 @@ except socket.gaierror as e:
     print "ERROR: Host "+host+" not reachable. Please provide proper hostname"
     sys.exit()
 
+lfm =  db.job_schedule.find({}).sort("job_create_time",-1)
 
 for doc in lfm:
     print doc
