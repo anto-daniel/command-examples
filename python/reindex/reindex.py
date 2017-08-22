@@ -125,7 +125,9 @@ print "New documents got inserted in reindex_gcid "
 #    print doc
 
 lfm =  db.job_schedule.find({}).sort("job_create_time",-1)
-
+reindex_lag = get_lag("reindexconsumers","reindex","fab-jpus01-zoo-h1:2471")
+while reindex_lag != 0:
+    print "Reindex lag still exists. Need to wait till the lag becomes zero"
 
 host = "192.168.56.101"
 try:
