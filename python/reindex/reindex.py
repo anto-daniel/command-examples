@@ -41,6 +41,25 @@ class myssh:
         retval = stdout.channel.recv_exit_status()
         return sshdata, ssherr, retval
 
+def get_lag(group, topic, zkservers):
+    kafka_bin = "/data1/kafka/kafka_2.9.1-0.8.1.1_actiance/bin"
+    kafka_class = "kafka.tools.ConsumerOffsetChecker"
+    cmd = kafka_bin+"/kafka-run-class.sh "+kafka_class+" --broker-info --group "+group+" --topic "+topic+" --zkconnect "+zkservers
+    getlag_cmd = cmd+" | grep "+topic+" | awk '{sum+=$6} END {print sum}' "
+    try:
+        output = subprocess.check_output(getlag_cmd,shell=True,stderr=subprocess.STDOUT).rstrip()
+        if "Exception" in output:
+            print "group: "+group+" not found"
+            output = group+" not found"
+        if not output:
+            print "topic not found"
+            output = topic+": topic not found"
+    except subprocess.CalledProcessError as e:
+        output = "0"
+        print "ERROR: ", e.output
+    print output
+    return output
+
 
 def job_status(id1, collection):
     arr=[]
