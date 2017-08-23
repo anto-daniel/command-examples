@@ -149,9 +149,11 @@ print "New documents got inserted in reindex_gcid "
 
 offsets_check = record_lag("reindexConsumers","reIndex","fab-jpus01-zoo-h1:2471")
 reindex_lag = get_lag("reindexConsumers","reIndex","fab-jpus01-zoo-h1:2471")
-while reindex_lag == 0:
+ilag = int(reindex_lag)
+while ilag != 0:
     print "Reindex lag still exists. Need to wait till the lag becomes zero"
     reindex_lag = get_lag("reindexconsumers","reindex","fab-jpus01-zoo-h1:2471")
+    ilag = int(reindex_lag)
 
 
 host = "192.168.56.101"
