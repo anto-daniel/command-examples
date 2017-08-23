@@ -10,6 +10,10 @@ import subprocess
 import paramiko
 import atexit
 
+ts = time.time()
+st = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
+today = datetime.datetime.fromtimestamp(ts).strftime('%Y_%m_%d')
+
 hostname = socket.gethostname()
 
 #### For Mongo SSL Auth Connection ########
@@ -66,8 +70,9 @@ def record_offsets(group, topic, zkservers):
     cmd = kafka_bin+"/kafka-run-class.sh "+kafka_class+" --broker-info --group "+group+" --topic "+topic+" --zkconnect "+zkservers
     getlag_cmd = cmd+" | grep "+topic+" | awk '{print $4}' | grep -E '[0-9]'"
     try:
+        reindex_offsets = "reindex_offsets_"+today+".txt"
         output = subprocess.check_output(getlag_cmd,shell=True,stderr=subprocess.STDOUT).rstrip()
-        f = open('reindex_offsets', 'w')
+        f = open(reindex_offsets, 'w')
         f.write(output)
         f.close()
         arr = output.split('\n')
