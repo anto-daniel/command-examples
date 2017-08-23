@@ -60,6 +60,29 @@ def get_lag(group, topic, zkservers):
     print output
     return output
 
+def record_offsets(group, topic, zkservers):
+    kafka_bin = "/opt/kafka/bin"
+    kafka_class = "kafka.tools.ConsumerOffsetChecker"
+    cmd = kafka_bin+"/kafka-run-class.sh "+kafka_class+" --broker-info --group "+group+" --topic "+topic+" --zkconnect "+zkservers
+    getlag_cmd = cmd+" | grep "+topic+" | awk '{print $4}' | grep -E '[0-9]'"
+    try:
+        output = subprocess.check_output(getlag_cmd,shell=True,stderr=subprocess.STDOUT).rstrip()
+        f = open('reindex_offsets', 'w')
+        f.write(output)
+        f.close()
+        arr = output.split('\n')
+        if "Exception" in output:
+            print "group: "+group+" not found"
+            output = group+" not found"
+        if not output:
+            print "topic not found"
+            output = topic+": topic not found"
+    except subprocess.CalledProcessError as e:
+        output = "0"
+        print "ERROR: ", e.output
+    print arr
+    return arr
+
 
 def job_status(id1, collection):
     arr=[]
@@ -124,9 +147,9 @@ print "New documents got inserted in reindex_gcid "
 #for doc in pdb.reindex_gcid.find():
 #    print doc
 
-
-reindex_lag = get_lag("reindexconsumers","reindex","fab-jpus01-zoo-h1:2471")
-while reindex_lag != 0:
+offsets_check = record_lag("reindexConsumers","reIndex","fab-jpus01-zoo-h1:2471")
+reindex_lag = get_lag("reindexConsumers","reIndex","fab-jpus01-zoo-h1:2471")
+while reindex_lag == 0:
     print "Reindex lag still exists. Need to wait till the lag becomes zero"
     reindex_lag = get_lag("reindexconsumers","reindex","fab-jpus01-zoo-h1:2471")
 
