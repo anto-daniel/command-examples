@@ -10,22 +10,26 @@ import subprocess
 import paramiko
 import atexit
 
-ts = time.time()
-st = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
-today = datetime.datetime.fromtimestamp(ts).strftime('%Y_%m_%d')
-
-hostname = socket.gethostname()
+### Hostname to run dr mongo and reindex queries
+hostname = "fab-emdr01-karafui-h1-1"
 
 #### For Mongo SSL Auth Connection ########
-#mdb = MongoClient(hostname, 23758,ssl=True,ssl_cert_reqs=ssl.CERT_NONE)
-#mdb.the_database.authenticate('admin', 'alcatraz1400', mechanism='SCRAM-SHA-1',source='admin')
+mdb = MongoClient(hostname, 23758,ssl=True,ssl_cert_reqs=ssl.CERT_NONE)
+mdb.the_database.authenticate('admin', 'alcatraz1400', mechanism='SCRAM-SHA-1',source='admin')
 
 ### For Mongo Plain Connection #####
-mdb = MongoClient(hostname, 27017)
+#mdb = MongoClient(hostname, 23758)
 
 #### Going to Mongo Database ####
 db = mdb['alcatraz']
-tenant = "prodnam"
+tenant = "prodemea"
+
+#### time
+
+ts = time.time()
+#st = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
+today = datetime.datetime.fromtimestamp(ts).strftime('%Y_%m_%d_%H_%S')
+
 
 class myssh:
 
@@ -46,7 +50,7 @@ class myssh:
         return sshdata, ssherr, retval
 
 def get_lag(group, topic, zkservers):
-    kafka_bin = "/data1/kafka/kafka_2.9.1-0.8.1.1_actiance/bin"
+    kafka_bin = "/opt/kafka/bin"
     kafka_class = "kafka.tools.ConsumerOffsetChecker"
     cmd = kafka_bin+"/kafka-run-class.sh "+kafka_class+" --broker-info --group "+group+" --topic "+topic+" --zkconnect "+zkservers
     getlag_cmd = cmd+" | grep "+topic+" | awk '{sum+=$6} END {print sum}' "
@@ -88,12 +92,18 @@ def record_offsets(group, topic, zkservers):
     print arr
     return arr
 
-
 def job_status(id1, collection):
     arr=[]
     lists = db.job_schedule.find({"_id":id1})
     print [arr.append(value["job_status"]) for value in lists]
     return arr[0]
+
+def uniq_docs(seq):
+    keys = {}
+    for e in seq:
+        print "INFO:FUNCTION:uniq_docs:elem:"+str(e)
+        keys[str(e)] = 1
+    return keys.keys()
 
 jobs = db.job_schedule.find({"job_target" : "REINDEX", "trigger_type": "RECURRING"})
 true_ids = []
@@ -108,6 +118,8 @@ for job in jobs:
         db.job_schedule.update({"_id": id1}, { '$set': {"job_active_fl": False}})
     else:
         print "id "+id1+": job_active_fl is "+str(job["job_active_fl"])
+
+print "INFO: waiting for the jobs to get COMPLETED"
 
 for id in true_ids:
     print id
@@ -129,14 +141,18 @@ for elem in pqry_refined:
     print elem
     reindex_failed_msg.append(elem)
 
+print  "INFO: replacing gcid with _id"
 for ele in reindex_failed_msg:
     print "reindex:reindex_failed_msg"
     ele["_id"] = ele["gcid"]
+    print  "INFO: replacing gcid with _id "+ele["_id"]
     del ele["gcid"]
     print ele
-used = []
-unique_docs = [x for x in reindex_failed_msg if x not in used and used.append(x)]
 
+print "INFO: Making docs Uniq.."
+used = uniq_docs(reindex_failed_msg)
+#unique_docs = [x for x in reindex_failed_msg if x not in used and used.append(x)]
+print "INFO: length of uniq array "+str(len(used))
 print "Printing uniq docs"
 for ele in used:
     print ele
@@ -152,20 +168,20 @@ print "New documents got inserted in reindex_gcid "
 #for doc in pdb.reindex_gcid.find():
 #    print doc
 
-offsets_check = record_lag("reindexConsumers","reIndex","fab-jpus01-zoo-h1:2471")
-reindex_lag = get_lag("reindexConsumers","reIndex","fab-jpus01-zoo-h1:2471")
-ilag = int(reindex_lag)
-while ilag != 0:
-    print "Reindex lag still exists. Need to wait till the lag becomes zero"
-    reindex_lag = get_lag("reindexconsumers","reindex","fab-jpus01-zoo-h1:2471")
-    ilag = int(reindex_lag)
+reindex_lag = int(get_lag("reindexConsumers","reindex","fab-emdr01-kafzoo-h1:2471"))
+while reindex_lag != 0:
+    print "reindex lag: "+str(reindex_lag)
+    print "Reindex lag  still exists. Need to wait till the lag becomes zero"
+    reindex_lag = int(get_lag("reindexConsumers","reindex","fab-emdr01-kafzoo-h1:2471"))
+
+offsets_check = record_lag("reindexConsumers","reindex","fab-emdr01-kafzoo-h1:2471")
 
 
-host = "192.168.56.101"
+host = "fab-emdr01-karafui-h1-1"
 try:
-    remote1=myssh(host,"apcuser","facetime")
+    remote1=myssh(host,"sysops","alcatraz1400")
     try:
-        karaf_cmd = 'apc-asm-reindex:reindex-custom -u apc_admin -p facetime -tenantId "'+tenant+'"'
+        karaf_cmd = 'apc-asm-reindex:reindex-custom -u apc_admin -p facetime -tenantId '+tenant
         cmd = "/apps/karaf/bin/client "+karaf_cmd
         out1,err1,retval=remote1(cmd)
         print out1
@@ -189,16 +205,16 @@ for doc in lfm:
         status = job_status(id,"job_schedule")
         print status
 
+reindex_lag1 = int(get_lag("reindexConsumers","reindex","fab-emdr01-kafzoo-h1:2471"))
+while reindex_lag1 != 0:
+    print "reindex lag: "+str(reindex_lag1)
+    print "Reindex lag  still exists. Need to wait till the lag becomes zero"
+    reindex_lag1 = int(get_lag("reindexConsumers","reindex","fab-emdr01-kafzoo-h1:2471"))
+
+offsets_check1 = record_lag("reindexConsumers","reindex","fab-emdr01-kafzoo-h1:2471")
+
+
 
 #for id in true_ids:
-#    print id
-#    l = db.job_schedule.find({"_id":id})
-#    inst = l[0]
-#    status = inst["job_status"]
-#    while status != "COMPLETED":
-#        print  "job id:"+id+" is in "+status+" status"
-#        time.sleep(1)
-#        status = job_status(id,"job_schedule")
-#        print status
 #    print id+": setting it back to true"
 #    db.job_schedule.update({"_id": id}, { '$set': {"job_active_fl": True}})
