@@ -20,11 +20,12 @@ mdb.the_database.authenticate('admin', 'alcatraz1400', mechanism='SCRAM-SHA-1',s
 db = mdb['alcatraz']
 tenant = "prodemea"
 
-
+#### Logger ########
 logging.info("Hello World!!!")
 print "Hello"
 
 def uniq_docs(seq, idfun=None):
+    """ function used to make array of elements unique """
     keys = {}
     for e in seq:
         print "INFO:FUNCTION:uniq_docs:elem:"+str(e)
@@ -38,6 +39,6 @@ pqry_refined = pdb.reindex_failed_message.find({"status":"FAILED"}, {"gcid":1, "
 
 logging.info("Adding failed messages in array")
 
-for elem in pqry_refined:
-    print "appending:"+str(elem)
-    reindex_failed_msg.append(elem)
+#for elem in pqry_refined:
+#    print "appending:"+str(elem)
+#    reindex_failed_msg.append(elem)
