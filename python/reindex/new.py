@@ -6,6 +6,10 @@ import pymongo, ssl
 import datetime, time
 
 
+logging.basicConfig(filename='example.log',level=logging.DEBUG)
+logging.debug('This message should go to the log file')
+logging.info('So should this')
+logging.warning('And this, too')
 ### Hostname to run dr mongo and reindex queries
 hostname = "fab-emdr01-karafui-h1-1"
 
