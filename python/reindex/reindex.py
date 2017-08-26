@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 from pymongo import MongoClient
+import pymongo
 import datetime, time
 import sys
 import ssl
@@ -9,7 +10,8 @@ import socket
 import subprocess
 import paramiko
 import atexit
-
+import json
+import ast
 ### Hostname to run dr mongo and reindex queries
 hostname = "fab-emdr01-karafui-h1-1"
 
@@ -98,12 +100,14 @@ def job_status(id1, collection):
     print [arr.append(value["job_status"]) for value in lists]
     return arr[0]
 
-def uniq_docs(seq):
+def uniq_docs(seq, idfun=None):
     keys = {}
     for e in seq:
         print "INFO:FUNCTION:uniq_docs:elem:"+str(e)
         keys[str(e)] = 1
     return keys.keys()
+
+
 
 jobs = db.job_schedule.find({"job_target" : "REINDEX", "trigger_type": "RECURRING"})
 true_ids = []
@@ -147,26 +151,43 @@ for ele in reindex_failed_msg:
     ele["_id"] = ele["gcid"]
     print  "INFO: replacing gcid with _id "+ele["_id"]
     del ele["gcid"]
+    ele["event_audit_time"] = str(ele["event_audit_time"])
     print ele
 
 print "INFO: Making docs Uniq.."
 used = uniq_docs(reindex_failed_msg)
+print type(used)
+print "INFO: Length of reindex_failed_message: "+str(len(reindex_failed_msg))
+print "INFO: Length of array: "+str(len(used))
+dups = len(reindex_failed_msg) - len(used)
+print "INFO: Duplicates found: "+str(dups)
 #unique_docs = [x for x in reindex_failed_msg if x not in used and used.append(x)]
-print "INFO: length of uniq array "+str(len(used))
-print "Printing uniq docs"
+print "INFO: Printing uniq docs"
 for ele in used:
     print ele
 
+print "Duplicates found: "+str(dups)
 
 pqridx = pdb.reindex_gcid.delete_many({})
 print "Cleared the data in collection reindex_gcid"
 print str(pqridx.deleted_count)+" documents deleted in reindex_gcid"
 
-result = pdb.reindex_gcid.insert([value for value in used])
-print "New documents got inserted in reindex_gcid "
-### To check new documents
-#for doc in pdb.reindex_gcid.find():
-#    print doc
+
+
+for value in used:
+    print "INFO: New document gonna insert: "+value
+    jdump = json.dumps(value)
+    jdict = json.loads(jdump)
+    jeval = ast.literal_eval(jdict)
+    print jeval['event_audit_time']
+    try:
+        result = pdb.reindex_gcid.insert_one({"_id":jeval['_id'],"event_audit_time":datetime.datetime.strptime(jeval['event_audit_time'],"%Y-%m-%d %H:%M:%S.%f")})
+        print "INFO: New document "+value+" got inserted in reindex_gcid "
+    except ValueError:
+        result = pdb.reindex_gcid.insert_one({"_id":jeval['_id'],"event_audit_time":datetime.datetime.strptime(jeval['event_audit_time'],"%Y-%m-%d %H:%M:%S")})
+        print "INFO: New document "+value+" got inserted in reindex_gcid "
+    except pymongo.errors.DuplicateKeyError:
+        print "ERROR: Skipping dup doc: "+value
 
 reindex_lag = int(get_lag("reindexConsumers","reindex","fab-emdr01-kafzoo-h1:2471"))
 while reindex_lag != 0:
