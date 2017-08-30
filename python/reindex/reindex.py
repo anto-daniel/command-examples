@@ -12,6 +12,8 @@ import paramiko
 import atexit
 import json
 import ast
+
+
 ### Hostname to run dr mongo and reindex queries
 hostname = "fab-emdr01-karafui-h1-1"
 
