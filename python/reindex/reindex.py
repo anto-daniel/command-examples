@@ -12,8 +12,6 @@ import paramiko
 import atexit
 import json
 import ast
-
-
 ### Hostname to run dr mongo and reindex queries
 hostname = "fab-emdr01-karafui-h1-1"
 
@@ -186,10 +184,14 @@ for value in used:
         result = pdb.reindex_gcid.insert_one({"_id":jeval['_id'],"event_audit_time":datetime.datetime.strptime(jeval['event_audit_time'],"%Y-%m-%d %H:%M:%S.%f")})
         print "INFO: New document "+value+" got inserted in reindex_gcid "
     except ValueError:
-        result = pdb.reindex_gcid.insert_one({"_id":jeval['_id'],"event_audit_time":datetime.datetime.strptime(jeval['event_audit_time'],"%Y-%m-%d %H:%M:%S")})
-        print "INFO: New document "+value+" got inserted in reindex_gcid "
+        try:
+            result = pdb.reindex_gcid.insert_one({"_id":jeval['_id'],"event_audit_time":datetime.datetime.strptime(jeval['event_audit_time'],"%Y-%m-%d %H:%M:%S")})
+            print "INFO: New document "+value+" got inserted in reindex_gcid "
+        except pymongo.errors.DuplicateKeyError:
+            print "ERROR: Skipping dup doc: "+value
     except pymongo.errors.DuplicateKeyError:
         print "ERROR: Skipping dup doc: "+value
+#    print doc
 
 reindex_lag = int(get_lag("reindexConsumers","reindex","fab-emdr01-kafzoo-h1:2471"))
 while reindex_lag != 0:
@@ -197,14 +199,14 @@ while reindex_lag != 0:
     print "Reindex lag  still exists. Need to wait till the lag becomes zero"
     reindex_lag = int(get_lag("reindexConsumers","reindex","fab-emdr01-kafzoo-h1:2471"))
 
-offsets_check = record_lag("reindexConsumers","reindex","fab-emdr01-kafzoo-h1:2471")
+offsets_check = record_offsets("reindexConsumers","reindex","fab-emdr01-kafzoo-h1:2471")
 
 
 host = "fab-emdr01-karafui-h1-1"
 try:
     remote1=myssh(host,"sysops","alcatraz1400")
     try:
-        karaf_cmd = 'apc-asm-reindex:reindex-custom -u apc_admin -p facetime -tenantId '+tenant
+        karaf_cmd = 'apc-asm-reindex:reindex-custom -u apc_admin -p facetime -tenantId "'+tenant+'" -colName "reindex_gcid"'
         cmd = "/apps/karaf/bin/client "+karaf_cmd
         out1,err1,retval=remote1(cmd)
         print out1
@@ -234,7 +236,7 @@ while reindex_lag1 != 0:
     print "Reindex lag  still exists. Need to wait till the lag becomes zero"
     reindex_lag1 = int(get_lag("reindexConsumers","reindex","fab-emdr01-kafzoo-h1:2471"))
 
-offsets_check1 = record_lag("reindexConsumers","reindex","fab-emdr01-kafzoo-h1:2471")
+offsets_check1 = record_offsets("reindexConsumers","reindex","fab-emdr01-kafzoo-h1:2471")
 
 
 
