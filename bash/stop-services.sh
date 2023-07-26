@@ -1,5 +1,6 @@
 #!/bin/bash
 
+### Stopping all fabrics
 
 systemctl stop karaf-nfs
 systemctl stop karaf
