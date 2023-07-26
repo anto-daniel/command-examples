@@ -7,8 +7,6 @@ from fabric.api import env, put
 env.user = "user"
 env.password = "xxxxxx"
 
-## Functions
-
 def hello(who="world"):
     print "Hello {who}!".format(who=who)
 

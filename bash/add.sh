@@ -24,5 +24,3 @@ function recur  {
 }
 
 recur $num 
-
-echo "Testing 1"
